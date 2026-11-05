@@ -8,7 +8,7 @@
   --bg:#eef1ee; --panel:#ffffff; --fg:#14201a; --muted:#56655d; --line:#c5cfc8;
   --pcb:#1d5c3c; --pcb-ink:#e9f5ee; --radar:#2b2f3a; --radar-ink:#eef0f6; --pad:#c9a54a;
   --w5v:#d23b2f; --wgnd:#1b1b1b; --wtx:#c98a00; --wrx:#1f6fd1;
-  --warn:#b8461f; --ok:#2c7a4b;
+  --warn:#b8461f; --ok:#2c7a4b; --w33:#e0742a; --wsda:#7a4fc7; --wscl:#0f9b8e; --opt:#4a5a7a; --opt-ink:#eef1f8;
   --display:"IBM Plex Sans Condensed","Arial Narrow",system-ui,sans-serif;
   --body:"IBM Plex Sans Condensed",system-ui,sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
@@ -16,11 +16,11 @@
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#0f1512; --panel:#16201b; --fg:#e4ece7; --muted:#93a59b; --line:#2b3a32;
   --pcb:#1f6b45; --pcb-ink:#eaf7ef; --radar:#3a3f4d; --radar-ink:#f1f3f8; --pad:#d9b75c;
-  --w5v:#ff6a5c; --wgnd:#cfd6d2; --wtx:#f2b632; --wrx:#5aa2ff; --warn:#ff8a5c; --ok:#5fd18f; color-scheme:dark}}
+  --w5v:#ff6a5c; --wgnd:#cfd6d2; --wtx:#f2b632; --wrx:#5aa2ff; --warn:#ff8a5c; --ok:#5fd18f; --w33:#ff9a55; --wsda:#b18cff; --wscl:#3fd1c2; --opt:#4b5a7c; --opt-ink:#eef1f8; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#0f1512; --panel:#16201b; --fg:#e4ece7; --muted:#93a59b; --line:#2b3a32;
   --pcb:#1f6b45; --pcb-ink:#eaf7ef; --radar:#3a3f4d; --radar-ink:#f1f3f8; --pad:#d9b75c;
-  --w5v:#ff6a5c; --wgnd:#cfd6d2; --wtx:#f2b632; --wrx:#5aa2ff; --warn:#ff8a5c; --ok:#5fd18f; color-scheme:dark}
+  --w5v:#ff6a5c; --wgnd:#cfd6d2; --wtx:#f2b632; --wrx:#5aa2ff; --warn:#ff8a5c; --ok:#5fd18f; --w33:#ff9a55; --wsda:#b18cff; --wscl:#3fd1c2; --opt:#4b5a7c; --opt-ink:#eef1f8; color-scheme:dark}
 body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.5}
 .wrap{max-width:980px;margin:0 auto;padding-block:20px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:20px}
 header{display:grid;gap:4px}
@@ -111,6 +111,40 @@ li strong{font-weight:600}
         <text x="426" y="160" fill="var(--wrx)"  text-anchor="middle">radar Rx ← ESP TX (GPIO17)</text>
       </g>
 
+      <!-- optional gyro GY-BMI160 (I2C) -->
+      <g>
+        <rect x="40" y="290" width="250" height="110" rx="8" fill="var(--opt)" stroke="var(--muted)" stroke-dasharray="6 5"/>
+        <text x="120" y="332" fill="var(--opt-ink)" font-size="14" text-anchor="middle" font-weight="600">GY-BMI160</text>
+        <text x="120" y="350" fill="var(--opt-ink)" font-size="11" text-anchor="middle">gyro 6 trục · I2C</text>
+        <text x="120" y="368" fill="var(--opt-ink)" font-size="11" text-anchor="middle" opacity=".8">TUỲ CHỌN · chưa có</text>
+        <g font-size="12" text-anchor="middle">
+          <rect x="222" y="300" width="56" height="18" rx="3" fill="var(--pad)"/><text x="250" y="313" fill="#1a1a1a">VIN</text>
+          <rect x="222" y="324" width="56" height="18" rx="3" fill="var(--pad)"/><text x="250" y="337" fill="#1a1a1a">GND</text>
+          <rect x="222" y="348" width="56" height="18" rx="3" fill="var(--pad)"/><text x="250" y="361" fill="#1a1a1a">SDA</text>
+          <rect x="222" y="372" width="56" height="18" rx="3" fill="var(--pad)"/><text x="250" y="385" fill="#1a1a1a">SCL</text>
+        </g>
+      </g>
+      <g font-size="12" text-anchor="middle">
+        <rect x="574" y="270" width="54" height="18" rx="3" fill="var(--pad)"/><text x="601" y="283" fill="#1a1a1a">3V3</text>
+        <rect x="574" y="294" width="54" height="18" rx="3" fill="var(--pad)"/><text x="601" y="307" fill="#1a1a1a">G</text>
+        <rect x="574" y="318" width="54" height="18" rx="3" fill="var(--pad)"/><text x="601" y="331" fill="#1a1a1a">8</text>
+        <rect x="574" y="342" width="54" height="18" rx="3" fill="var(--pad)"/><text x="601" y="355" fill="#1a1a1a">9</text>
+      </g>
+      <g font-size="10.5" fill="var(--pcb-ink)">
+        <text x="640" y="331">SDA</text>
+        <text x="640" y="355">SCL</text>
+      </g>
+      <g fill="none" stroke-width="4" stroke-linecap="round" stroke-dasharray="9 6">
+        <path d="M278 309 C 420 309, 430 279, 574 279" stroke="var(--w33)"/>
+        <path d="M278 333 C 420 333, 430 303, 574 303" stroke="var(--wgnd)"/>
+        <path d="M278 357 C 420 357, 430 327, 574 327" stroke="var(--wsda)"/>
+        <path d="M278 381 C 420 381, 430 351, 574 351" stroke="var(--wscl)"/>
+      </g>
+      <g font-size="11">
+        <text x="426" y="275" fill="var(--w33)" text-anchor="middle">VIN → 3V3</text>
+        <text x="426" y="398" fill="var(--muted)" text-anchor="middle">nét đứt = tuỳ chọn, gắn khi cầm tay</text>
+      </g>
+
       <!-- back shield + power source -->
       <g>
         <rect x="40" y="200" width="250" height="10" rx="2" fill="#9aa1a8"/>
@@ -137,6 +171,11 @@ li strong{font-weight:600}
           <tr><td class="mono"><span class="sw" style="background:var(--wgnd)"></span>GND</td><td class="mono">G</td><td>Bắt buộc chung mass.</td></tr>
           <tr><td class="mono"><span class="sw" style="background:var(--wtx)"></span>Tx</td><td class="mono">GPIO18</td><td>Radar gửi, ESP32 nhận. UART 256000 baud.</td></tr>
           <tr><td class="mono"><span class="sw" style="background:var(--wrx)"></span>Rx</td><td class="mono">GPIO17</td><td>ESP32 gửi lệnh cấu hình lúc khởi động.</td></tr>
+          <tr><th colspan="3">Gyro GY-BMI160 · tuỳ chọn, chưa có · firmware chưa hỗ trợ</th></tr>
+          <tr><td class="mono"><span class="sw" style="background:var(--w33)"></span>VIN</td><td class="mono">3V3</td><td>Shop ghi nhận 3–5 V.</td></tr>
+          <tr><td class="mono"><span class="sw" style="background:var(--wgnd)"></span>GND</td><td class="mono">G</td><td>Chân G nào trên board cũng được.</td></tr>
+          <tr><td class="mono"><span class="sw" style="background:var(--wsda)"></span>SDA</td><td class="mono">GPIO8</td><td>I2C dữ liệu.</td></tr>
+          <tr><td class="mono"><span class="sw" style="background:var(--wscl)"></span>SCL</td><td class="mono">GPIO9</td><td>I2C xung nhịp.</td></tr>
         </tbody>
       </table>
       </div>
