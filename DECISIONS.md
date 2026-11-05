@@ -11,3 +11,13 @@ RBEGamer và crate Rust `ld2450-proto` 0.2.0 (frame mẫu lấy từ datasheet).
 ## 2026-11-05 — Board: Waveshare ESP32-S3-Touch-LCD-2.8 (240×320)
 Có khe TF, sạc LiPo, chip audio + loa, cảm ứng, PSRAM 8MB, đủ cả 4 yêu cầu (radar/số liệu/cảnh báo/log).
 LilyGo T-Display-S3 gọn hơn nhưng không có SD + loa.
+
+## 2026-11-05 — Giữ thiết kế cầm tay một khối; bíp theo khoảng cách + chọn tầm đo
+Tham khảo một bài cộng đồng: LD2450 → ESP32-S3 → LoRa → Raspberry Pi + Pygame. Tác giả nói phần khó nhất là đường
+truyền LoRa/UART (từng lệch 868 vs 915 MHz), và ngoài 4m lưới + âm thanh khó dùng.
+Quyết định:
+- Giữ máy một khối, không có khâu truyền không dây.
+- Thêm âm thanh theo khoảng cách và cho chọn tầm 3/4/6m.
+- Chế độ cảm biến đặt xa để sang v2, ưu tiên ESP-NOW (không cần module thêm). Nếu dùng LoRa thì phải ở
+  918,4–923 MHz, công suất ≤25mW theo quy định VN (868 đã bỏ, 915 trùng GSM900).
+- Giao diện là radar quét theo phong cách riêng, không chép giao diện phim.
