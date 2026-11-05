@@ -1,0 +1,158 @@
+<title>LD2450 Wiring Map</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans+Condensed:wght@400;600;700&display=swap">
+<style>
+/* Layout: one bench sheet — diagram on top, pin table + pre-power checks below, stacked on phone */
+:root{
+  --bg:#eef1ee; --panel:#ffffff; --fg:#14201a; --muted:#56655d; --line:#c5cfc8;
+  --pcb:#1d5c3c; --pcb-ink:#e9f5ee; --radar:#2b2f3a; --radar-ink:#eef0f6; --pad:#c9a54a;
+  --w5v:#d23b2f; --wgnd:#1b1b1b; --wtx:#c98a00; --wrx:#1f6fd1;
+  --warn:#b8461f; --ok:#2c7a4b;
+  --display:"IBM Plex Sans Condensed","Arial Narrow",system-ui,sans-serif;
+  --body:"IBM Plex Sans Condensed",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1512; --panel:#16201b; --fg:#e4ece7; --muted:#93a59b; --line:#2b3a32;
+  --pcb:#1f6b45; --pcb-ink:#eaf7ef; --radar:#3a3f4d; --radar-ink:#f1f3f8; --pad:#d9b75c;
+  --w5v:#ff6a5c; --wgnd:#cfd6d2; --wtx:#f2b632; --wrx:#5aa2ff; --warn:#ff8a5c; --ok:#5fd18f; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1512; --panel:#16201b; --fg:#e4ece7; --muted:#93a59b; --line:#2b3a32;
+  --pcb:#1f6b45; --pcb-ink:#eaf7ef; --radar:#3a3f4d; --radar-ink:#f1f3f8; --pad:#d9b75c;
+  --w5v:#ff6a5c; --wgnd:#cfd6d2; --wtx:#f2b632; --wrx:#5aa2ff; --warn:#ff8a5c; --ok:#5fd18f; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.5}
+.wrap{max-width:980px;margin:0 auto;padding-block:20px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:20px}
+header{display:grid;gap:4px}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(24px,4vw,34px);margin:0;text-wrap:balance;letter-spacing:.01em}
+.sub{color:var(--muted);margin:0;max-width:65ch}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.sheet{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;overflow-x:auto}
+svg{display:block;width:100%;height:auto;min-width:560px}
+svg text{font-family:var(--mono)}
+.grid{display:grid;grid-template-columns:1.1fr .9fr;gap:20px}
+@media (max-width:760px){.grid{grid-template-columns:1fr}}
+.grid>section{min-width:0}
+h2{font-family:var(--display);font-size:19px;margin:0 0 10px;font-weight:600}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--mono);font-size:12px;font-weight:400;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+td code,.mono{font-family:var(--mono);font-size:13.5px}
+.sw{display:inline-block;width:22px;height:5px;border-radius:3px;vertical-align:middle;margin-right:8px}
+ol{margin:0;padding-left:20px;display:grid;gap:10px}
+li strong{font-weight:600}
+.note{border-left:3px solid var(--warn);padding:8px 12px;background:color-mix(in srgb,var(--warn) 8%,transparent);border-radius:0 6px 6px 0;color:var(--fg)}
+.ok{color:var(--ok)}
+.tablebox{overflow-x:auto}
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">ld2450-radar-scanner · env s3_web</span>
+    <h1>Nối HLK-LD2450 vào ESP32-S3 DevKitC</h1>
+    <p class="sub">4 sợi dây. Dò theo <strong>chữ in trên mạch</strong>, không theo vị trí trên hình: thứ tự chân của module radar và của các board ESP32-S3 clone có thể khác nhau.</p>
+  </header>
+
+  <div class="sheet" role="img" aria-label="Sơ đồ nối dây: LD2450 5V vào 5V, GND vào G, Tx vào GPIO18, Rx vào GPIO17 của ESP32-S3">
+    <svg viewBox="0 0 900 470" xmlns="http://www.w3.org/2000/svg">
+      <!-- LD2450 module -->
+      <g>
+        <rect x="40" y="40" width="250" height="120" rx="8" fill="var(--radar)"/>
+        <rect x="58" y="58" width="150" height="84" rx="4" fill="none" stroke="var(--radar-ink)" stroke-opacity=".35" stroke-dasharray="4 4"/>
+        <text x="133" y="96" fill="var(--radar-ink)" font-size="13" text-anchor="middle">anten 24 GHz</text>
+        <text x="133" y="114" fill="var(--radar-ink)" font-size="11" text-anchor="middle" opacity=".7">quay ra phía trước</text>
+        <text x="165" y="32" fill="var(--fg)" font-size="15" font-weight="600" text-anchor="middle">HLK-LD2450</text>
+        <!-- pins -->
+        <g font-size="12" text-anchor="middle">
+          <rect x="222" y="54"  width="56" height="18" rx="3" fill="var(--pad)"/><text x="250" y="67"  fill="#1a1a1a">5V</text>
+          <rect x="222" y="78"  width="56" height="18" rx="3" fill="var(--pad)"/><text x="250" y="91"  fill="#1a1a1a">GND</text>
+          <rect x="222" y="102" width="56" height="18" rx="3" fill="var(--pad)"/><text x="250" y="115" fill="#1a1a1a">Tx</text>
+          <rect x="222" y="126" width="56" height="18" rx="3" fill="var(--pad)"/><text x="250" y="139" fill="#1a1a1a">Rx</text>
+        </g>
+        <text x="165" y="182" fill="var(--muted)" font-size="11" text-anchor="middle">thứ tự chân theo manual V1.00 — đọc lại chữ in</text>
+      </g>
+
+      <!-- ESP32-S3 board -->
+      <g>
+        <rect x="560" y="30" width="300" height="400" rx="10" fill="var(--pcb)"/>
+        <rect x="640" y="110" width="140" height="150" rx="4" fill="#c7cbd1"/>
+        <text x="710" y="180" fill="#2a2f35" font-size="13" text-anchor="middle">ESP32-S3</text>
+        <text x="710" y="198" fill="#2a2f35" font-size="11" text-anchor="middle">WROOM-1 N16R8</text>
+        <text x="710" y="22" fill="var(--fg)" font-size="15" font-weight="600" text-anchor="middle">ESP32-S3 DevKitC (N16R8)</text>
+        <!-- header pins used -->
+        <g font-size="12">
+          <rect x="574" y="54"  width="54" height="18" rx="3" fill="var(--pad)"/><text x="601" y="67"  fill="#1a1a1a" text-anchor="middle">5V</text>
+          <rect x="574" y="78"  width="54" height="18" rx="3" fill="var(--pad)"/><text x="601" y="91"  fill="#1a1a1a" text-anchor="middle">G</text>
+          <rect x="574" y="102" width="54" height="18" rx="3" fill="var(--pad)"/><text x="601" y="115" fill="#1a1a1a" text-anchor="middle">18</text>
+          <rect x="574" y="126" width="54" height="18" rx="3" fill="var(--pad)"/><text x="601" y="139" fill="#1a1a1a" text-anchor="middle">17</text>
+          <text x="640" y="67"  fill="var(--pcb-ink)" font-size="11">5V / 5V0 / 5Vin</text>
+          <text x="640" y="91"  fill="var(--pcb-ink)" font-size="11">GND</text>
+          <text x="640" y="104" fill="var(--pcb-ink)" font-size="11" opacity="0">.</text>
+        </g>
+        <text x="601" y="164" fill="var(--pcb-ink)" font-size="10.5" text-anchor="middle">RX ← radar</text>
+        <text x="601" y="178" fill="var(--pcb-ink)" font-size="10.5" text-anchor="middle">TX → radar</text>
+        <!-- USB ports -->
+        <rect x="640" y="400" width="54" height="34" rx="4" fill="#9aa1a8"/><text x="667" y="452" fill="var(--fg)" font-size="12" text-anchor="middle" font-weight="600">USB</text>
+        <rect x="726" y="400" width="54" height="34" rx="4" fill="#9aa1a8" opacity=".55"/><text x="753" y="452" fill="var(--muted)" font-size="12" text-anchor="middle">UART</text>
+        <text x="710" y="380" fill="var(--pcb-ink)" font-size="11" text-anchor="middle">cắm cổng USB: nguồn + log</text>
+      </g>
+
+      <!-- wires -->
+      <g fill="none" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M278 63 C 400 63, 450 63, 574 63" stroke="var(--w5v)"/>
+        <path d="M278 87 C 400 87, 450 87, 574 87" stroke="var(--wgnd)"/>
+        <path d="M278 111 C 380 111, 420 111, 470 111 S 520 111, 574 111" stroke="var(--wtx)"/>
+        <path d="M278 135 C 380 135, 420 135, 470 135 S 520 135, 574 135" stroke="var(--wrx)"/>
+      </g>
+      <g font-size="11.5">
+        <text x="426" y="56"  fill="var(--w5v)"  text-anchor="middle">5V  (≥200 mA)</text>
+        <text x="426" y="80"  fill="var(--muted)" text-anchor="middle">GND chung</text>
+        <text x="426" y="104" fill="var(--wtx)"  text-anchor="middle">radar Tx → ESP RX (GPIO18)</text>
+        <text x="426" y="160" fill="var(--wrx)"  text-anchor="middle">radar Rx ← ESP TX (GPIO17)</text>
+      </g>
+
+      <!-- back shield + power source -->
+      <g>
+        <rect x="40" y="200" width="250" height="10" rx="2" fill="#9aa1a8"/>
+        <text x="165" y="230" fill="var(--muted)" font-size="11" text-anchor="middle">tấm nhôm / băng keo đồng chắn mặt sau</text>
+        <text x="165" y="245" fill="var(--muted)" font-size="11" text-anchor="middle">(không chạm vào mạch)</text>
+      </g>
+      <g>
+        <rect x="560" y="455" width="0" height="0"/>
+        <path d="M667 434 L667 462 L420 462" fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="5 4"/>
+        <rect x="300" y="440" width="120" height="28" rx="6" fill="none" stroke="var(--muted)"/>
+        <text x="360" y="459" fill="var(--fg)" font-size="11.5" text-anchor="middle">Mac / sạc dự phòng</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="grid">
+    <section>
+      <h2>Bảng nối</h2>
+      <div class="tablebox">
+      <table>
+        <thead><tr><th>LD2450</th><th>ESP32-S3</th><th>Ghi chú</th></tr></thead>
+        <tbody>
+          <tr><td class="mono"><span class="sw" style="background:var(--w5v)"></span>5V</td><td class="mono">5V</td><td>Cần 5V, nguồn ≥200 mA (manual). Không nối vào 3V3.</td></tr>
+          <tr><td class="mono"><span class="sw" style="background:var(--wgnd)"></span>GND</td><td class="mono">G</td><td>Bắt buộc chung mass.</td></tr>
+          <tr><td class="mono"><span class="sw" style="background:var(--wtx)"></span>Tx</td><td class="mono">GPIO18</td><td>Radar gửi, ESP32 nhận. UART 256000 baud.</td></tr>
+          <tr><td class="mono"><span class="sw" style="background:var(--wrx)"></span>Rx</td><td class="mono">GPIO17</td><td>ESP32 gửi lệnh cấu hình lúc khởi động.</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>Kiểm trước khi cấp nguồn</h2>
+      <ol>
+        <li><strong>Đo chân 5V của board.</strong> Cắm USB, chưa nối radar: giữa 5V và G phải ra khoảng 4,7–5 V. Ra 0 V thì board cần hàn cầu IN–OUT.</li>
+        <li><strong>Tx, Rx nối chéo.</strong> Nối thẳng thì không hỏng gì, chỉ là trang web báo "radar không gửi dữ liệu". Gặp vậy thì đảo 2 dây.</li>
+        <li><strong>Đúng cực 5V và GND.</strong> Cắm ngược có thể làm hỏng radar.</li>
+        <li><strong>Lần thử đầu đặt radar cố định</strong> trên bàn hoặc giá, mặt anten quay ra phía trước.</li>
+        <li><strong>Xem log ở cổng "USB"</strong>, không phải cổng "UART".</li>
+      </ol>
+    </section>
+  </div>
+
+  <p class="note">Thứ tự chân <span class="mono">5V GND Tx Rx</span> trên LD2450 vẽ theo bảng chân trong manual Hi-Link V1.00, chưa đối chiếu với module thật. Tên chân phía ESP32-S3 theo hướng dẫn DevKitC-1 của Espressif. Board clone có thể in khác.</p>
+</div>
