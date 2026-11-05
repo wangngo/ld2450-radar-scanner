@@ -21,3 +21,8 @@ Quyết định:
 - Chế độ cảm biến đặt xa để sang v2, ưu tiên ESP-NOW (không cần module thêm). Nếu dùng LoRa thì phải ở
   918,4–923 MHz, công suất ≤25mW theo quy định VN (868 đã bỏ, 915 trùng GSM900).
 - Giao diện là radar quét theo phong cách riêng, không chép giao diện phim.
+
+## 2026-11-05 — Bản web: WiFi AP + HTTP poll, không dùng WebSocket
+Dùng WebServer có sẵn trong Arduino core, điện thoại fetch `/data` 100ms một lần. Không cần thư viện ngoài, trễ
+~100ms là đủ dùng. Log CSV lưu trên điện thoại (tải file) thay cho thẻ SD. Âm thanh dùng WebAudio trên điện thoại.
+Chân UART chọn GPIO18/17 thay cho 43/44, vì trên DevKitC 43/44 nối với chip USB-UART.
