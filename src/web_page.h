@@ -28,18 +28,18 @@ body.alert{animation:fl .4s steps(2) infinite}@keyframes fl{50%{background:#3a08
  <button id="snd">🔇 Âm thanh</button>
  <button id="rec">● Ghi log</button>
  <button id="dl">⬇ CSV (0)</button>
- <button id="cl" class="on">Gộp &lt;1m: BẬT</button>
+ <button id="cl">Gộp &lt;1m: TẮT</button>
 </div>
 <div class="row"><span>Vùng cảnh báo</span><input id="zone" type="range" min="0" max="6" step="0.25" value="1.5"><span id="zv">1.5 m</span></div>
 <table><thead><tr><th>#</th><th>Cách</th><th>Góc</th><th>V cm/s</th><th>Bám liên tục</th><th>Mất dấu</th></tr></thead><tbody id="tb"></tbody></table>
 <div class="row"><button id="rst">↺ Reset thống kê</button><span style="color:#1f6b42;font-size:12px">Thử đứng yên: xem "Bám liên tục" có tăng đều, "Mất dấu" có đứng yên ở 0</span></div>
 <script>
 const C=document.getElementById('c'),X=C.getContext('2d'),COL=['#7dffb0','#ffd84d','#5cc8ff'];
-let R=4,zone=1.5,trails=[[],[],[]],targets=[],sound=false,ac=null,nextBeep=0,rec=false,log=[],lastOk=0,fps=0,cnt=0,t0=performance.now();
+let R=4,zone=1.5,trails=[[],[],[]],targets=[],sound=false,ac=null,nextBeep=0,rec=false,log=[],lastOk=0;
 const $=id=>document.getElementById(id);
 // thống kê bám mục tiêu theo slot 1..3 + vị trí làm mượt (EMA) chỉ để vẽ; CSV vẫn là số thô
 const GHOST_MS=2000,EMA=0.4;let trk=[0,1,2].map(()=>({on:false,since:0,lost:0,lostAt:-1e9,sx:0,sy:0}));
-let clusterOn=true;function showCl(v){clusterOn=v;$('cl').classList.toggle('on',v);$('cl').textContent='Gộp <1m: '+(v?'BẬT':'TẮT')}
+let clusterOn=false;function showCl(v){clusterOn=v;$('cl').classList.toggle('on',v);$('cl').textContent='Gộp <1m: '+(v?'BẬT':'TẮT')}
 $('cl').onclick=async()=>{try{const r=await fetch('/cfg?cluster='+(clusterOn?0:1));showCl((await r.json()).cluster)}catch(e){}};
 $('rst').onclick=()=>{const n=performance.now();trk.forEach(k=>{k.lost=0;if(k.on)k.since=n})};
 const fmtS=ms=>ms<60000?(ms/1000).toFixed(0)+'s':Math.floor(ms/60000)+'m'+String(Math.floor(ms/1000)%60).padStart(2,'0');
@@ -65,7 +65,8 @@ requestAnimationFrame(draw);
 function beep(f){const o=ac.createOscillator(),v=ac.createGain();o.frequency.value=f;o.connect(v);v.connect(ac.destination);const n=ac.currentTime;v.gain.setValueAtTime(0.25,n);v.gain.exponentialRampToValueAtTime(0.001,n+0.09);o.start(n);o.stop(n+0.1)}
 function audio(){if(sound&&ac){const near=targets.filter(t=>t.d/1000<=R).sort((a,b)=>a.d-b.d)[0];const now=performance.now();if(near&&now>=nextBeep){const k=Math.min(1,near.d/1000/R);beep(1300-800*k);nextBeep=now+90+1300*k}}setTimeout(audio,30)}
 audio();
-async function poll(){try{const r=await fetch('/data',{cache:'no-store'});const j=await r.json();lastOk=performance.now();
+let lastN=-1,lastNt=0,radarHz=0;
+async function poll(){const ab=new AbortController(),to=setTimeout(()=>ab.abort(),1000);try{const r=await fetch('/data',{cache:'no-store',signal:ab.signal});const j=await r.json();lastOk=performance.now();
  targets=j.t.map(a=>({id:a[0],x:a[1],y:a[2],s:a[3],d:Math.round(Math.hypot(a[1],a[2])),ang:Math.atan2(a[1],a[2])*57.2958}));
  const seen=new Set(targets.map(t=>t.id)),tn=performance.now();trails=trails.map((tr,i)=>seen.has(i+1)?tr:[]);
  trk.forEach((k,i)=>{const on=seen.has(i+1);if(k.on&&!on){k.lost++;k.lostAt=tn}if(!k.on&&on)k.since=tn;k.on=on});
@@ -76,10 +77,10 @@ async function poll(){try{const r=await fetch('/data',{cache:'no-store'});const 
  $('tb').innerHTML=trk.map((k,i)=>{const t=targets.find(t=>t.id===i+1);if(!t&&!k.lost)return'';const c=COL[i];
   if(!t)return`<tr style="opacity:.5"><td style="color:${c}">${i+1}</td><td colspan="3">mất dấu ${fmtS(tn-k.lostAt)} trước</td><td>–</td><td>${k.lost}</td></tr>`;
   return`<tr><td style="color:${c}">${i+1}</td><td>${(t.d/1000).toFixed(2)} m</td><td>${t.ang.toFixed(0)}°</td><td>${t.s===0?'0 (yên)':t.s}</td><td>${fmtS(tn-k.since)}</td><td>${k.lost}</td></tr>`}).join('')||'<tr><td colspan="6" style="text-align:center;color:#1f6b42">không có mục tiêu</td></tr>';
- cnt++;const n=performance.now();if(n-t0>1000){fps=cnt*1000/(n-t0);cnt=0;t0=n}
- const st=$('st');if(j.stale){st.textContent='radar không gửi dữ liệu';st.className='bad'}else{st.textContent=fps.toFixed(0)+' Hz · '+({1:'1 người',2:'nhiều người'}[j.mode]||'chế độ ?')+' · '+j.n+' frame';st.className='ok'}
+ const n=performance.now();if(lastN<0){lastN=j.n;lastNt=n}else if(n-lastNt>1000){radarHz=(j.n-lastN)*1000/(n-lastNt);lastN=j.n;lastNt=n}
+ const st=$('st');if(j.stale){st.textContent='radar không gửi dữ liệu';st.className='bad'}else{st.textContent='radar '+radarHz.toFixed(0)+' Hz · '+({1:'1 người',2:'nhiều người'}[j.mode]||'chế độ ?')+' · '+j.n+' frame';st.className='ok'}
  if(j.cluster!==undefined&&j.cluster!==clusterOn)showCl(j.cluster);
-}catch(e){const st=$('st');st.textContent='mất kết nối ESP32';st.className='bad'}
- setTimeout(poll,100)}
+}catch(e){targets=[];document.body.classList.remove('alert');const st=$('st');st.textContent='mất kết nối ESP32';st.className='bad'}
+ clearTimeout(to);setTimeout(poll,100)}
 poll();
 </script></body></html>)HTML";

@@ -33,3 +33,7 @@ Ai-Thinker RD-03D, định dạng frame + mã hoá dấu giống LD2450. Lấy: 
 lọc ngoài tầm. KHÔNG lấy "ghost filter" (ẩn mục tiêu đứng yên 2s): đi ngược mục tiêu phát hiện người đứng yên.
 IMU trong repo Tactical chỉ để vẽ la bàn, không bù chuyển động radar → phần bù gyro phải tự làm.
 Tác giả cũng ghi: radar bị di chuyển thì độ chính xác giảm mạnh (khớp manual LD2450).
+
+## 2026-11-05 — Review advisor: gộp mục tiêu mặc định TẮT
+Gộp <1m làm slot biến mất → UI đếm "mất dấu" ảo, chấm nằm giữa 2 người; ý tưởng gốc từ RD-03D, chưa có bằng chứng
+LD2450 tách tay/thân thành 2 mục tiêu. Giữ tính năng (nút bật trên web) nhưng mặc định tắt cho tới khi test thật.

@@ -18,6 +18,14 @@
 - [ ] Log CSV lên SD
 - [ ] Đo thời lượng pin, làm vỏ
 
+- [ ] Checklist lần flash đầu (từ review advisor 2026-11-05):
+  - Xem log qua cổng **"USB"** (native) của DevKitC, KHÔNG phải cổng "UART" (CDC_ON_BOOT=1)
+  - Đặt radar trên giá cố định (tripod) trước, cầm tay sau
+  - Chắn mặt sau radar bằng kim loại, test riêng xem người cầm có bị bắt thành mục tiêu không
+  - Trang web phải hiện ~10 Hz "radar" (tính từ số frame), không phải tần số poll
+  - Kiểm slot ID của LD2450 có giữ nguyên theo người không (cột "Bám liên tục" giả định vậy)
+- [ ] Tìm tài liệu lệnh chính hãng Hi-Link ("LD2450 serial communication protocol") đối chiếu 0x00FF/0x0091/0x0090/0x00FE
+- [ ] Viết test native cho máy trạng thái cấu hình (hiện chỉ nằm trong main.cpp)
 - [ ] Verify trên radar thật: log serial phải có `# radar mode hiện tại` + `# radar cfg xong`; nếu ra 'không nhận ACK' thì LD2450 không hỗ trợ/khác lệnh → firmware vẫn chạy cấu hình gốc
 
 ## Học từ repo Stevee87 (RD-03D, cùng định dạng frame) — chờ W chọn

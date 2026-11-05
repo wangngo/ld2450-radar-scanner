@@ -19,7 +19,7 @@ Tham khảo khác: LilyGo T-Display-S3 gọn hơn nhưng không có khe SD, cũn
 
 ## B. Firmware (khi hàng về)
 Repo mới, private: `~/ld2450-radar-scanner` → GitHub `wangngo/ld2450-radar-scanner`, gồm CLAUDE.md, TASKS.md, DECISIONS.md, CHANGELOG.md.
-Dùng PlatformIO + Arduino (core 3.x), env `esp32-s3-devkitc-1` có PSRAM.
+Dùng PlatformIO + Arduino core 2.0.17 (platform espressif32@6.9.0, đã ghim), env `esp32-s3-devkitc-1` có PSRAM.
 
 0. **Định danh thiết bị LIVE**: chạy `esptool chip_id/flash_id` để lấy MAC + kiểm OUI Espressif, rồi ghi vào CLAUDE.md repo. Đọc chữ in trên module LD2450, đọc phiên bản firmware radar qua lệnh cấu hình.
 1. **Parser**: thử thư viện `RBEGamer/HLK-LD2450` trước. Viết test native (`pio test -e native`) bằng frame 30 byte thật lấy từ UART. Các điểm phải kiểm: bit dấu (top bit = dấu, không phải bù 2), đơn vị (tài liệu ghi lệch nhau mm vs cm, phải **tra manual HLK chính hãng**), speed tính bằng cm/s. Thư viện lỗi thì tự viết parser nhỏ, giữ nguyên test.

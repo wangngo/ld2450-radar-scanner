@@ -70,6 +70,10 @@ void test_filter_range() {
   TEST_ASSERT_FALSE(f.t[0].valid);
   TEST_ASSERT_FALSE(f.t[1].valid);
   TEST_ASSERT_TRUE(f.t[2].valid);
+  Ld2450Frame g;
+  g.t[0] = T(500, -300);  // phía sau radar
+  ld2450_filter(g, false);
+  TEST_ASSERT_FALSE(g.t[0].valid);
 }
 
 void test_filter_cluster_on_off() {

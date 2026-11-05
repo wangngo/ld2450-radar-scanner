@@ -13,7 +13,7 @@ inline void ld2450_filter(Ld2450Frame &f, bool cluster) {
     Ld2450Target &t = f.t[i];
     if (!t.valid) continue;
     float d = hypotf((float)t.x, (float)t.y);
-    if (d < LD2450_MIN_MM || d > LD2450_MAX_MM) t.valid = false;
+    if (t.y <= 0 || d < LD2450_MIN_MM || d > LD2450_MAX_MM) t.valid = false;  // y<=0: không ở phía trước
   }
   if (!cluster) return;
   for (int i = 0; i < 3; i++) {

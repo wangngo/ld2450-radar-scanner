@@ -29,7 +29,7 @@ static Ld2450AckParser ack;
 static Ld2450Frame shown;  // frame sau lọc, dùng cho web + CSV
 static WebServer server(80);
 static uint32_t lastFrameMs = 0;
-static bool clusterOn = true;
+static bool clusterOn = false;  // mặc định TẮT: gộp làm sai thống kê slot + mục tiêu là bắt người đứng yên
 
 // ── Cấu hình radar lúc boot: bật cfg → hỏi chế độ → (nếu single) chuyển multi → kết thúc cfg ──
 enum CfgStep { CFG_WAIT_BOOT, CFG_ENABLE, CFG_QUERY, CFG_MULTI, CFG_END, CFG_DONE, CFG_FAIL };
@@ -83,7 +83,12 @@ static void cfgOnAck() {
 static void cfgTick() {
   uint32_t now = millis();
   if (cfgStep == CFG_WAIT_BOOT) { if (now > CFG_BOOT_DELAY_MS) cfgGoto(CFG_ENABLE); return; }
-  if (cfgStep == CFG_DONE || cfgStep == CFG_FAIL || now - cfgSentMs < CFG_TIMEOUT_MS) return;
+  if (cfgStep == CFG_FAIL) {
+    // END không được ACK: nếu radar im (có thể kẹt ở chế độ cfg) thì cứ 5s gửi lại END
+    if (now - lastFrameMs > STALE_MS && now - cfgSentMs > 5000) sendCmd(LD2450_CMD_END_CFG);
+    return;
+  }
+  if (cfgStep == CFG_DONE || now - cfgSentMs < CFG_TIMEOUT_MS) return;
   if (++cfgTries >= CFG_MAX_TRIES) {
     Serial.printf("# radar cfg: không nhận ACK cho 0x%04X, bỏ qua (radar vẫn chạy cấu hình gốc)\n", stepCmd(cfgStep));
     if (cfgStep == CFG_END) { cfgStep = CFG_FAIL; return; }
@@ -117,6 +122,7 @@ static void handleCfg() {
 
 void setup() {
   Serial.begin(115200);
+  Serial.setTxTimeoutMs(0);  // cắm PC mà không mở terminal: không để mỗi lần in chờ 100ms làm kẹt loop
   Serial1.setRxBufferSize(1024);
   Serial1.begin(RADAR_BAUD, SERIAL_8N1, RADAR_RX_PIN, RADAR_TX_PIN);
 
