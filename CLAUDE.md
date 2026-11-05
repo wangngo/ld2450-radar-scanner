@@ -24,4 +24,12 @@ cảnh báo khi có người vào vùng, ghi log CSV lên SD. Plan đầy đủ:
 ## Gotcha
 - Trường thứ 4 của mỗi target là **distance resolution**, KHÔNG phải khoảng cách → khoảng cách = hypot(x,y).
 - Số có dấu dùng bit15 làm cờ dấu (1 = dương), không phải bù 2.
-- Nghĩa dấu speed (dương = lại gần hay ra xa?) và đơn vị mm: theo ld2450-proto/RBEGamer, **chưa verify thực địa**.
+- Đơn vị x/y mm, speed cm/s, 10 frame/s: **đã xác nhận theo manual HLK V1.00** (`docs/datasheets/`). Manual chỉ nói
+  bit15=1 là "speed dương", không nói dương = lại gần hay ra xa → **vẫn phải thử thực địa**.
+- Manual có lỗi tính: ví dụ ghi resolution "0x40+0x01*256 = 360mm", thực ra bằng 320. Test dùng 320.
+- Manual: nguồn 5V, nguồn cấp phải chịu được **>200mA**; IO 3.3V; tầm 6m, góc ngang ±60°, góc dọc ±35°;
+  chỉ có 4 chân 5V/GND/Tx/Rx, không có chân OUT.
+- Manual: **radar bị rung lắc sẽ ảnh hưởng kết quả đo**, và **búp sóng phía sau** có thể bắt chuyển động sau lưng radar
+  → cầm tay thì người cầm nằm ngay sau radar: cần **tấm kim loại chắn mặt sau** + bù/bỏ dữ liệu khi lia máy (gyro).
+- Manual: nhiều radar 24GHz không được đặt chĩa thẳng vào nhau, càng xa nhau càng tốt (liên quan nếu thêm LD2410B).
+- Trang shop thegioimodule (LD2450, 250k) chép mô tả của LD2410: ghi góc 60°, 5–12V, có chân OUT. Đừng tin, theo manual.
