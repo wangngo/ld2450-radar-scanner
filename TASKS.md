@@ -18,6 +18,12 @@
 - [ ] Log CSV lên SD
 - [ ] Đo thời lượng pin, làm vỏ
 
+## Học từ repo Stevee87 (RD-03D, cùng định dạng frame) — chờ W chọn
+- [ ] Gửi lệnh multi-target lúc boot: bật cấu hình 0x00FF → hỏi chế độ 0x0091 → nếu chưa multi thì 0x0090 → kết thúc 0x00FE (khớp crate ld2450-proto)
+- [ ] Gộp 2 mục tiêu cách nhau < ~0,6–1m (tay + thân cùng 1 người) — có nút bật/tắt vì 2 người đứng sát sẽ bị gộp nhầm
+- [ ] Bỏ mục tiêu < 0,1m hoặc > 6m (ngoài tầm theo manual)
+- [ ] Kiểm chân 5V của DevKitC clone: một số board phải hàn cầu IN-OUT thì chân 5V mới có điện khi cắm USB
+
 ## v2 (sau khi bản cầm tay chạy ổn)
 - [ ] Chế độ cảm biến đặt xa qua ESP-NOW (frame ~30B, ~10Hz). Cần xa hơn mới dùng LoRa, chỉnh 918,4–923 MHz ≤25mW (VN); kiểm tần số LIVE cả 2 đầu
 - [ ] Cân nhắc gộp LiDAR + mmWave trên cùng màn hình

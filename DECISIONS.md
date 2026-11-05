@@ -26,3 +26,10 @@ Quyết định:
 Dùng WebServer có sẵn trong Arduino core, điện thoại fetch `/data` 100ms một lần. Không cần thư viện ngoài, trễ
 ~100ms là đủ dùng. Log CSV lưu trên điện thoại (tải file) thay cho thẻ SD. Âm thanh dùng WebAudio trên điện thoại.
 Chân UART chọn GPIO18/17 thay cho 43/44, vì trên DevKitC 43/44 nối với chip USB-UART.
+
+## 2026-11-05 — Tham khảo repo Stevee87 (RD-03D): lấy gì, bỏ gì
+Repo `Arduino-ESP32-Radarproject`, `Radar-project-Uconsole`, `Tactical-Radar-System...`, `Northworks...` dùng
+Ai-Thinker RD-03D, định dạng frame + mã hoá dấu giống LD2450. Lấy: lệnh multi-target lúc boot, gộp mục tiêu < 1m,
+lọc ngoài tầm. KHÔNG lấy "ghost filter" (ẩn mục tiêu đứng yên 2s): đi ngược mục tiêu phát hiện người đứng yên.
+IMU trong repo Tactical chỉ để vẽ la bàn, không bù chuyển động radar → phần bù gyro phải tự làm.
+Tác giả cũng ghi: radar bị di chuyển thì độ chính xác giảm mạnh (khớp manual LD2450).
