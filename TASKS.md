@@ -18,10 +18,12 @@
 - [ ] Log CSV lên SD
 - [ ] Đo thời lượng pin, làm vỏ
 
+- [ ] Verify trên radar thật: log serial phải có `# radar mode hiện tại` + `# radar cfg xong`; nếu ra 'không nhận ACK' thì LD2450 không hỗ trợ/khác lệnh → firmware vẫn chạy cấu hình gốc
+
 ## Học từ repo Stevee87 (RD-03D, cùng định dạng frame) — chờ W chọn
-- [ ] Gửi lệnh multi-target lúc boot: bật cấu hình 0x00FF → hỏi chế độ 0x0091 → nếu chưa multi thì 0x0090 → kết thúc 0x00FE (khớp crate ld2450-proto)
-- [ ] Gộp 2 mục tiêu cách nhau < ~0,6–1m (tay + thân cùng 1 người) — có nút bật/tắt vì 2 người đứng sát sẽ bị gộp nhầm
-- [ ] Bỏ mục tiêu < 0,1m hoặc > 6m (ngoài tầm theo manual)
+- [x] Gửi lệnh multi-target lúc boot: bật cấu hình 0x00FF → hỏi chế độ 0x0091 → nếu chưa multi thì 0x0090 → kết thúc 0x00FE (khớp crate ld2450-proto)
+- [x] Gộp 2 mục tiêu cách nhau < ~0,6–1m (tay + thân cùng 1 người) — có nút bật/tắt vì 2 người đứng sát sẽ bị gộp nhầm
+- [x] Bỏ mục tiêu < 0,1m hoặc > 6m (ngoài tầm theo manual)
 - [ ] Kiểm chân 5V của DevKitC clone: một số board phải hàn cầu IN-OUT thì chân 5V mới có điện khi cắm USB
 
 ## v2 (sau khi bản cầm tay chạy ổn)

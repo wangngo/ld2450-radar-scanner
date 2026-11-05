@@ -28,6 +28,7 @@ body.alert{animation:fl .4s steps(2) infinite}@keyframes fl{50%{background:#3a08
  <button id="snd">🔇 Âm thanh</button>
  <button id="rec">● Ghi log</button>
  <button id="dl">⬇ CSV (0)</button>
+ <button id="cl" class="on">Gộp &lt;1m: BẬT</button>
 </div>
 <div class="row"><span>Vùng cảnh báo</span><input id="zone" type="range" min="0" max="6" step="0.25" value="1.5"><span id="zv">1.5 m</span></div>
 <table><thead><tr><th>#</th><th>Cách</th><th>Góc</th><th>V cm/s</th><th>Bám liên tục</th><th>Mất dấu</th></tr></thead><tbody id="tb"></tbody></table>
@@ -38,6 +39,8 @@ let R=4,zone=1.5,trails=[[],[],[]],targets=[],sound=false,ac=null,nextBeep=0,rec
 const $=id=>document.getElementById(id);
 // thống kê bám mục tiêu theo slot 1..3 + vị trí làm mượt (EMA) chỉ để vẽ; CSV vẫn là số thô
 const GHOST_MS=2000,EMA=0.4;let trk=[0,1,2].map(()=>({on:false,since:0,lost:0,lostAt:-1e9,sx:0,sy:0}));
+let clusterOn=true;function showCl(v){clusterOn=v;$('cl').classList.toggle('on',v);$('cl').textContent='Gộp <1m: '+(v?'BẬT':'TẮT')}
+$('cl').onclick=async()=>{try{const r=await fetch('/cfg?cluster='+(clusterOn?0:1));showCl((await r.json()).cluster)}catch(e){}};
 $('rst').onclick=()=>{const n=performance.now();trk.forEach(k=>{k.lost=0;if(k.on)k.since=n})};
 const fmtS=ms=>ms<60000?(ms/1000).toFixed(0)+'s':Math.floor(ms/60000)+'m'+String(Math.floor(ms/1000)%60).padStart(2,'0');
 function size(){const w=C.clientWidth,d=devicePixelRatio||1;C.width=w*d;C.height=w*0.62*d;C.style.height=w*0.62+'px';X.setTransform(d,0,0,d,0,0)}
@@ -74,7 +77,8 @@ async function poll(){try{const r=await fetch('/data',{cache:'no-store'});const 
   if(!t)return`<tr style="opacity:.5"><td style="color:${c}">${i+1}</td><td colspan="3">mất dấu ${fmtS(tn-k.lostAt)} trước</td><td>–</td><td>${k.lost}</td></tr>`;
   return`<tr><td style="color:${c}">${i+1}</td><td>${(t.d/1000).toFixed(2)} m</td><td>${t.ang.toFixed(0)}°</td><td>${t.s===0?'0 (yên)':t.s}</td><td>${fmtS(tn-k.since)}</td><td>${k.lost}</td></tr>`}).join('')||'<tr><td colspan="6" style="text-align:center;color:#1f6b42">không có mục tiêu</td></tr>';
  cnt++;const n=performance.now();if(n-t0>1000){fps=cnt*1000/(n-t0);cnt=0;t0=n}
- const st=$('st');if(j.stale){st.textContent='radar không gửi dữ liệu';st.className='bad'}else{st.textContent=fps.toFixed(0)+' Hz · '+j.n+' frame';st.className='ok'}
+ const st=$('st');if(j.stale){st.textContent='radar không gửi dữ liệu';st.className='bad'}else{st.textContent=fps.toFixed(0)+' Hz · '+({1:'1 người',2:'nhiều người'}[j.mode]||'chế độ ?')+' · '+j.n+' frame';st.className='ok'}
+ if(j.cluster!==undefined&&j.cluster!==clusterOn)showCl(j.cluster);
 }catch(e){const st=$('st');st.textContent='mất kết nối ESP32';st.className='bad'}
  setTimeout(poll,100)}
 poll();

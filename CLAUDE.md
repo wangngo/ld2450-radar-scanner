@@ -11,7 +11,7 @@ cảnh báo khi có người vào vùng, ghi log CSV lên SD. Plan đầy đủ:
   Đã kiểm bằng mock server + Chrome headless; **CHƯA chạy trên board + radar thật**.
 - Nối dây `s3_web`: LD2450 5V→5V, GND→GND, TX→GPIO18, RX→GPIO17.
 - Bản màn hình gắn liền Waveshare (`waveshare_s3_28`): chờ mua board, pin theo wiki **chưa verify**.
-- Parser tự viết (`lib/ld2450_parser`) + 6 test native pass.
+- Parser + lệnh cấu hình + bộ lọc tự viết (`lib/ld2450_parser`), 12 test native pass. Máy trạng thái cấu hình radar lúc boot **chưa chạy trên radar thật**.
 
 ## Định danh thiết bị (điền khi hàng về — đọc LIVE, không tin nhãn)
 - ESP32-S3: MAC = ? (esptool `chip_id`, tra OUI Espressif), flash/PSRAM = ?
