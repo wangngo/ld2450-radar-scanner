@@ -38,7 +38,7 @@ File `.mcp.json` ở repo root (git-track được):
 |---|---|---|---|---|
 | ESP32-S3-DevKitC-1 v1.1 | 2×22 = 44 (J1/J3) | **2.54mm** (chuẩn, chốt) | **22.86mm** (0.9") | Board official (W xác nhận). Row-to-row: W đo tay ~22mm → dùng 22.86mm (0.9"). **Verify khi dựng**: chồng footprint lên board thật / DXF `DXF_ESP32-S3-DevKitC-1_V1.1_20220429.dxf` trước khi gửi gia công. Chip LIVE: MAC 1c:db:d4:43:ef:78 (Espressif), N16R8, rev v0.2 — xem CLAUDE.md. |
 | LD2450 | 1×4 | 2.54mm | — (1 hàng) | Manual HLK V1.00 (`docs/datasheets/`). Thứ tự `5V/GND/Tx/Rx` — soi silk board thật. |
-| BMI160 CJMCU-160 | 2 hàng (ảnh: 7 + 5?) | 2.54mm | **đo LIVE** | Ảnh W: phải `VIN/3V3/GND/SCL/SDA/CS/SAO`, trái `OCS/INT2/INT1/SCX/SDX`. Đếm + đo lại khi hàn. |
+| BMI160 CJMCU-160 | 2 hàng **7 + 5** (W xác nhận 2026-11-06) | 2.54mm | **10.16mm** (0.4", W đo tay ~10mm) | Phải `VIN/3V3/GND/SCL/SDA/CS/SAO` (1x07), trái `OCS/INT2/INT1/SCX/SDX` (1x05). Độ lệch dọc hàng 5 so với hàng 7: chưa chốt. Verify bằng bản in 1:1. |
 
 - KiCad lib: thử tìm footprint sẵn (`ESP32-S3-DevKit*`), không có thì ghép 2× `PinSocket_1x22_P2.54mm` đặt theo row spacing đo được. LD2450 = `PinSocket_1x04_P2.54mm`. BMI160 = `PinSocket_1x07` + `1x05` (theo đếm LIVE).
 - Caps: C1 100µF (CP SMD hoặc radial THT) + C2 100nF (0805) đặt sát chân 5V LD2450.
@@ -56,5 +56,5 @@ File `.mcp.json` ở repo root (git-track được):
 
 ## Bước phiên sau
 1. W duyệt + ghi `.mcp.json`; `uvx kicad-mcp-pro doctor` pass; restart session.
-2. W cấp số row-to-row DevKitC (đo) + xác nhận đếm chân BMI160.
+2. ~~W cấp số row-to-row DevKitC + đếm chân BMI160~~ — xong: DevKitC 22.86mm, BMI160 7+5 cách 10.16mm.
 3. Lái MCP (hoặc kicad-cli) dựng schematic theo netlist → PCB carrier → ERC/DRC pass → export Gerber. Git-commit từng bước.
