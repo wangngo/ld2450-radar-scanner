@@ -36,7 +36,7 @@ File `.mcp.json` ở repo root (git-track được):
 
 | Module | Chân | Pitch | Row-to-row | Nguồn / cần đo |
 |---|---|---|---|---|
-| ESP32-S3-DevKitC-1 | 2×22 = 44 (J1/J3) | 2.54mm (chuẩn) | **CHƯA chốt** | Official: DXF `DXF_ESP32-S3-DevKitC-1_V1.1_20220429.dxf` (dl.espressif.com). **W đo bằng thước kẹp** + đếm lại 22/hàng + đo dài board. |
+| ESP32-S3-DevKitC-1 v1.1 | 2×22 = 44 (J1/J3) | **2.54mm** (chuẩn, chốt) | **22.86mm** (0.9") | Board official (W xác nhận). Row-to-row: W đo tay ~22mm → dùng 22.86mm (0.9"). **Verify khi dựng**: chồng footprint lên board thật / DXF `DXF_ESP32-S3-DevKitC-1_V1.1_20220429.dxf` trước khi gửi gia công. Chip LIVE: MAC 1c:db:d4:43:ef:78 (Espressif), N16R8, rev v0.2 — xem CLAUDE.md. |
 | LD2450 | 1×4 | 2.54mm | — (1 hàng) | Manual HLK V1.00 (`docs/datasheets/`). Thứ tự `5V/GND/Tx/Rx` — soi silk board thật. |
 | BMI160 CJMCU-160 | 2 hàng (ảnh: 7 + 5?) | 2.54mm | **đo LIVE** | Ảnh W: phải `VIN/3V3/GND/SCL/SDA/CS/SAO`, trái `OCS/INT2/INT1/SCX/SDX`. Đếm + đo lại khi hàn. |
 
