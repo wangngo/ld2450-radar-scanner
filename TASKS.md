@@ -39,12 +39,17 @@
 - [ ] Chỉnh ngưỡng lắc thực địa (`lib/shake_detect/src/shake_detect.h`: on 30 / off 15 °/s, hold 300ms) — cầm tay yên xem `dps` trên web, lia nhẹ xem cờ bật đúng lúc.
 - [ ] Env `waveshare_s3_28` cũng gọi `imuBegin()` trên GPIO8/9 — khi có board Waveshare phải tra pin xem 8/9 có bị LCD/touch chiếm không.
 
+## Board đục lỗ (sơ đồ xong 2026-11-06, `docs/perfboard.html`)
+- [ ] Mua board 7×9cm (24×30 lỗ) + socket cái 1×22 ×2, 1×4, 1×7, 1×5 + tụ hoá 100µF (10–16V, chân 2.5mm) + tụ gốm 100nF chân cắm.
+- [ ] Hàn theo trang, đo thông mạch + 4 cặp không chập (5V–GND, 3V3–GND, 5V–3V3, 5V–J1.20) trước khi cắm module.
+- [ ] Kiểm mép trên board: antenna DevKitC nhô ~7.7mm trên tâm hàng 0; mép board dư thì cưa bớt.
+
 ## Carrier PCB v1 — kiểm trước khi đặt JLCPCB (từ review advisor 2026-11-06)
 - [x] ~~**BMI160 chiều gương**~~ — khớp theo ảnh 2 mặt W gửi 2026-11-06 (mặt linh kiện: hàng 7 bên trái, VIN trên). Nếu ảnh là ảnh shop → soi lại 1 lần trên board thật. Gốc:: cầm module mặt linh kiện LÊN, đầu VIN hướng ra xa → hàng 7 chân phải ở BÊN TRÁI, hàng 5 bên phải (đúng layout J4 x=52 / J5 x=62.16). Ngược lại = gương, xoay 180° không cứu được → sửa `gen_carrier.py`.
 - [ ] In 1:1 F.Silk/F.Fab, đặt DevKitC + BMI160 thật lên kiểm lỗ; antenna phải nằm trên notch.
 - [ ] LD2450: đo pitch chân thật (giả định 2.54) + thứ tự 5V/GND/Tx/Rx trên silk module; chốt cách gắn (dây / header cong) — cắm thẳng vào J2 thì radar chĩa lên trời + đè C1.
 - [ ] CJMCU-160: ảnh thấy 4 điện trở mã **392 (3.9kΩ)** + 1 IC 5 chân sát VIN (chưa đọc mã). Đo ohm SDA→3V3, SCL→3V3 lúc rút điện: ~3.9k = có pull-up, khỏi lắp R1/R2. Gốc: có pull-up SDA/SCL sẵn không (không có → lắp R1/R2 4k7), có LDO VIN→3V3 không (có → VIN 3V3 ra ~3.1V, vẫn trong dải BMI160).
-- [ ] (tuỳ) dựng schematic KiCad cho ERC — hiện netlist chỉ nằm trong script.
+- [x] Schematic KiCad + ERC 0 lỗi (`hardware/gen_schematic.py`).
 
 ## v2 (sau khi bản cầm tay chạy ổn)
 - [ ] Chế độ cảm biến đặt xa qua ESP-NOW (frame ~30B, ~10Hz). Cần xa hơn mới dùng LoRa, chỉnh 918,4–923 MHz ≤25mW (VN); kiểm tần số LIVE cả 2 đầu

@@ -13,6 +13,7 @@ cảnh báo khi có người vào vùng, ghi log CSV lên SD. Plan đầy đủ:
 - Bản màn hình gắn liền Waveshare (`waveshare_s3_28`): chờ mua board, pin theo wiki **chưa verify**.
 - **Carrier PCB v1** (`hardware/gen_carrier.py`, DRC 0/0, Gerber sẵn) — CHƯA đặt in: chờ kiểm chiều gương BMI160 + LD2450 pitch + in 1:1 (TASKS.md).
 - **Gyro BMI160**: driver Bosch + phát hiện lắc (web làm mờ mục tiêu khi lắc). Build OK, test 17/17, **chưa chạy trên chip thật**.
+- **Board đục lỗ**: sơ đồ hàn `docs/perfboard.html` + schematic `hardware/carrier/carrier.kicad_sch` (ERC 0). Sinh lại: `python3 hardware/gen_schematic.py && python3 hardware/gen_perfboard.py` (script tự so netlist).
 - Parser + lệnh cấu hình + bộ lọc tự viết (`lib/ld2450_parser`), 12 test native pass. Máy trạng thái cấu hình radar lúc boot **chưa chạy trên radar thật**.
 
 ## Định danh thiết bị (điền khi hàng về — đọc LIVE, không tin nhãn)

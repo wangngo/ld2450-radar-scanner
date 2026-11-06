@@ -1,6 +1,8 @@
 # CHANGELOG
 
 ## 2026-11-06
+- **Schematic KiCad** `hardware/carrier/carrier.kicad_sch` (sinh bằng `hardware/gen_schematic.py`, tên chân module cạnh từng chân): **ERC 0 vi phạm**, PDF `carrier-schematic.pdf`. Thêm `carrier.kicad_pro` + `sym/fp-lib-table` dùng `${KICAD10_*}` (máy chưa có bảng lib toàn cục). DRC PCB vẫn 0/0.
+- **Sơ đồ hàn board đục lỗ 7×9cm** `docs/perfboard.html` (sinh bằng `hardware/gen_perfboard.py`): mặt trên + mặt dưới (lật gương), 10 dây + 4 cầu thiếc, in 1:1. Script tự đối chiếu dây với netlist trích từ schematic (test âm: chập SDA/SCL và thiếu dây UART đều bị bắt). Advisor: không blocker; đã thêm đo 5V–J1.20 (cầu 5V sát GPIO14), rút DevKitC sau khi hàn socket, rút USB trước khi cắm radar.
 - **Gyro BMI160 → phát hiện lia/lắc máy**: driver chính hãng Bosch (`lib/bmi160`, BSD-3, ghim commit 252ac28) + lớp nối Wire `src/imu.h` (SDA 8 / SCL 9, addr 0x68, gyro 100Hz ±250dps).
   `lib/shake_detect`: bật ≥30°/s, giữ ≥15°/s, tắt sau 300ms yên (ngưỡng khởi đầu, chỉnh thực địa). Test native 17/17.
   `/data` thêm `imu`/`shake`/`dps`; web **làm mờ** mục tiêu + dòng "ĐANG LẮC MÁY" khi lắc (cảnh báo vùng/bíp vẫn chạy); CSV serial + web thêm cột `shake`.
