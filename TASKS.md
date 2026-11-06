@@ -12,7 +12,9 @@
 - [ ] Khi nhận board: định danh LIVE (esptool MAC+OUI), tra schematic: header có 5V không, có chân đo áp pin không, pin LCD/touch/SD/audio
 - [ ] Chụp frame thật từ UART → thêm vào test; verify đơn vị mm + dấu speed bằng thước/đi lại gần
 - [ ] Hiển thị: LovyanGFX, radar quạt 120° vòng 1/2/4/6m, chấm + vệt, bảng số liệu, thanh trạng thái (`src/main.cpp`)
-- [ ] Cảnh báo: chạm đặt bán kính vùng, chớp đỏ + bíp qua chip audio
+- [x] Cảnh báo LED RGB on-board (GPIO48 WS2812, verify thật 2026-11-07): màu xanh lá→vàng→đỏ theo mục tiêu gần nhất, <4m nháy nhanh dần, lắc→xanh dương, không ai→tắt (`src/led.h`). Chân chốt bằng `diag/led_test.cpp`.
+- [ ] Motor rung (HOÃN — W làm sau): motor ERM trần 2.5–4V **70mA** → cần mạch lái NPN S8050 + 1kΩ base + diode 1N4148 flyback, cấp 3V3, lái PWM (LEDC). Chọn GPIO rảnh (4/5/6/7/21). Chưa chốt chân.
+- [ ] Cảnh báo (web): chạm đặt bán kính vùng, chớp đỏ + bíp qua chip audio
 - [ ] Âm thanh theo khoảng cách: mục tiêu gần nhất càng gần → bíp càng dồn + cao (kiểu máy dò)
 - [ ] Chọn tầm đo 3/4/6m (vòng lưới theo tầm); đo độ chính xác thực tế >4m trước khi chốt mặc định
 - [ ] Log CSV lên SD

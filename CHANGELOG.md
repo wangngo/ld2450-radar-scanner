@@ -11,6 +11,10 @@
   - Fix build: chắn `Serial.setTxTimeoutMs(0)` bằng `#if ARDUINO_USB_CDC_ON_BOOT` (hàm chỉ có ở USB-CDC; build UART0 báo lỗi). Vô hại cho bản thật.
   - Khôi phục `s3_web` lên board. **Toàn bộ phần cứng (radar + gyro + WiFi/web) đã chạy & verify trên thật.**
   - Gotcha: muốn đọc log qua cổng usbserial (CH340) phải flash bản `CDC_ON_BOOT=0`; bản `s3_web` (CDC=1) log chỉ ra cổng USB native.
+- **Cảnh báo LED RGB on-board — code + verify trên board thật (2026-11-07).**
+  - Chốt chân LIVE: nháy thử GPIO48(đỏ)/GPIO38(xanh) (`diag/led_test.cpp`, env `led_test`), W xác nhận sáng ĐỎ → **WS2812 ở GPIO48** (board này theo mapping v1.0, không phải 38).
+  - `src/led.h`: màu theo mục tiêu gần nhất (xa=xanh lá → vàng → gần=đỏ), <4m bắt đầu nháy, càng gần chu kỳ càng ngắn (300mm≈120ms … 4m≈900ms); >4m sáng liên tục; không có ai/stale → tắt; **đang lắc (gyro) → xanh dương mờ, ngưng cảnh báo**. Độ sáng trần `ledBrightness=40/255`. Chỉ ghi WS2812 khi màu đổi (tránh spam RMT). Gắn vào `loop()`: tính nearest từ `shown` mỗi vòng → `ledTick`.
+  - Motor rung: **hoãn** (W làm sau). Lưu ý phần cứng: motor W có là **ERM trần 2.5–4V, 70mA** → KHÔNG cắm thẳng GPIO (quá dòng + back-EMF); cần **NPN S8050 + 1kΩ base + diode 1N4148 flyback**, cấp **3V3** (không 5V), lái PWM (LEDC).
 
 ## 2026-11-06
 - **Schematic KiCad** `hardware/carrier/carrier.kicad_sch` (sinh bằng `hardware/gen_schematic.py`, tên chân module cạnh từng chân): **ERC 0 vi phạm**, PDF `carrier-schematic.pdf`. Thêm `carrier.kicad_pro` + `sym/fp-lib-table` dùng `${KICAD10_*}` (máy chưa có bảng lib toàn cục). DRC PCB vẫn 0/0.

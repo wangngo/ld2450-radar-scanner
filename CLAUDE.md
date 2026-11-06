@@ -21,6 +21,8 @@ cảnh báo khi có người vào vùng, ghi log CSV lên SD. Plan đầy đủ:
 ## Định danh thiết bị (điền khi hàng về — đọc LIVE, không tin nhãn)
 - ESP32-S3 (verify LIVE 2026-11-06, esptool v5.3.1, cổng `/dev/cu.usbserial-0001`): QFN56 **rev v0.2**, 40MHz xtal. **MAC `1c:db:d4:43:ef:78`** → OUI `1C:DB:D4` = **Espressif** (tra nmap-mac-prefixes, khớp → silicon thật). Flash **16MB** (mfr 0x68, quad) + PSRAM **8MB** embedded → **đúng N16R8**. PSRAM octal chiếm GPIO33–37 → cấm dùng. Board form-factor = **ESP32-S3-DevKitC-1 v1.1 official** (W xác nhận; esptool không suy ra được form-factor, neo theo lời W + cần row-to-row từ bản vẽ Espressif hoặc đo thước kẹp cho footprint).
 - LD2450: chữ in trên module = ?, firmware radar = ?
+- **LED RGB on-board = WS2812 ở GPIO48** (verify LIVE 2026-11-07: nháy thử 48/38 → board sáng ĐỎ ở 48, tức mapping v1.0 dù form-factor ghi v1.1). Dùng `neopixelWrite(48,r,g,b)`. Cảnh báo ở `src/led.h`.
+- Motor rung (chưa gắn mạch): ERM trần **2.5–4V, 70mA** → phải có NPN S8050 + 1kΩ base + diode 1N4148, cấp 3V3, PWM LEDC. Chưa chốt GPIO.
 - Gyro = **BMI160** (board tím CJMCU-160). Neo: nhãn chân mặt sau `OCS/INT2/INT1/SCX/SDX` + `VIN/3V3/GND/SCL/SDA/CS/SAO` = chữ ký pinout BMI160 (IMU 6 trục). Chữ laser trên chip chưa đọc được → verify cuối = I2C scan + Chip ID reg `0x00` phải = `0xD1`.
   - Chiều: mặt linh kiện LÊN + VIN hướng xa → hàng 7 (VIN…SAO) bên TRÁI, hàng 5 bên phải, hàng 5 nằm giữa (OCS ngang 3V3). Nhãn chữ in ở mặt KHÔNG có chip (ngược gương).
   - I2C: VIN→3V3, GND→G, SDA→GPIO8, SCL→GPIO9. **CS→3V3 (ép I2C, CS thấp=SPI)**, **SAO→GND (addr 0x68)**. Board *có thể* đã pull-up sẵn (ảnh 2 mặt 2026-11-06 thấy 4 điện trở **392 = 3.9kΩ**, ghi chú cũ "103" có thể khác lô; chưa rõ nối chân nào → đo ohm tới 3V3) → quét I2C trước, trống mới hàn thêm. OCS/SCX/SDX/INT1/INT2 bỏ trống.
@@ -31,6 +33,7 @@ cảnh báo khi có người vào vùng, ghi log CSV lên SD. Plan đầy đủ:
 - Build: `pio run -e s3_web` · Flash: `pio run -e s3_web -t upload` · Log: `pio device monitor`
 - **Đọc log qua cổng usbserial (CH340)**: bản `s3_web` (CDC=1) log chỉ ra cổng USB native. Muốn đọc qua cổng CH340 → flash env **`s3_log`** (= s3_web, `CDC_ON_BOOT=0`) rồi monitor. Reset board không cần bấm nút: toggle RTS trong pyserial (`p.dtr=False; p.rts=True; sleep; p.rts=False`).
 - **Chẩn đoán I2C/gyro**: env **`i2cscan`** (`diag/i2cscan.cpp`) — quét bus GPIO8/9, đọc chip_id 0x68 & 0x69. Dùng khi web báo `gyro ✗`.
+- **Test chân LED RGB**: env **`led_test`** (`diag/led_test.cpp`) — nháy GPIO48(đỏ)/38(xanh) để tìm chân LED on-board thật.
 
 ## Gotcha
 - Trường thứ 4 của mỗi target là **distance resolution**, KHÔNG phải khoảng cách → khoảng cách = hypot(x,y).

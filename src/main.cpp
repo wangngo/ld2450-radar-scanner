@@ -7,6 +7,7 @@
 #include "ld2450_filter.h"
 #include "ld2450_parser.h"
 #include "imu.h"
+#include "led.h"
 #include "web_page.h"
 
 #ifndef RADAR_RX_PIN
@@ -161,5 +162,19 @@ void loop() {
   }
   imuTick(millis());
   cfgTick();
+
+  // LED RGB cảnh báo: mục tiêu gần nhất trong frame hiện tại
+  uint32_t now = millis();
+  bool stale = now - lastFrameMs > STALE_MS;
+  uint16_t nearest = 0xFFFF;
+  if (!stale) {
+    for (int i = 0; i < 3; i++) {
+      if (!shown.t[i].valid) continue;
+      uint16_t d = shown.t[i].distanceMm();
+      if (d < nearest) nearest = d;
+    }
+  }
+  ledTick(now, nearest, stale, shake.shaking);
+
   server.handleClient();
 }
