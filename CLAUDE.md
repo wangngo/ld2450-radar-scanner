@@ -14,7 +14,7 @@ cảnh báo khi có người vào vùng, ghi log CSV lên SD. Plan đầy đủ:
 - Parser + lệnh cấu hình + bộ lọc tự viết (`lib/ld2450_parser`), 12 test native pass. Máy trạng thái cấu hình radar lúc boot **chưa chạy trên radar thật**.
 
 ## Định danh thiết bị (điền khi hàng về — đọc LIVE, không tin nhãn)
-- ESP32-S3: MAC = ? (esptool `chip_id`, tra OUI Espressif), flash/PSRAM = ? (chọn N16R8: 16MB flash + 8MB PSRAM octal → PSRAM chiếm GPIO33–37, cấm dùng).
+- ESP32-S3 (verify LIVE 2026-11-06, esptool v5.3.1, cổng `/dev/cu.usbserial-0001`): QFN56 **rev v0.2**, 40MHz xtal. **MAC `1c:db:d4:43:ef:78`** → OUI `1C:DB:D4` = **Espressif** (tra nmap-mac-prefixes, khớp → silicon thật). Flash **16MB** (mfr 0x68, quad) + PSRAM **8MB** embedded → **đúng N16R8**. PSRAM octal chiếm GPIO33–37 → cấm dùng. Board form-factor = **ESP32-S3-DevKitC-1 v1.1 official** (W xác nhận; esptool không suy ra được form-factor, neo theo lời W + cần row-to-row từ bản vẽ Espressif hoặc đo thước kẹp cho footprint).
 - LD2450: chữ in trên module = ?, firmware radar = ?
 - Gyro = **BMI160** (board tím CJMCU-160). Neo: nhãn chân mặt sau `OCS/INT2/INT1/SCX/SDX` + `VIN/3V3/GND/SCL/SDA/CS/SAO` = chữ ký pinout BMI160 (IMU 6 trục). Chữ laser trên chip chưa đọc được → verify cuối = I2C scan + Chip ID reg `0x00` phải = `0xD1`.
   - I2C: VIN→3V3, GND→G, SDA→GPIO8, SCL→GPIO9. **CS→3V3 (ép I2C, CS thấp=SPI)**, **SAO→GND (addr 0x68)**. Board *có thể* đã pull-up CS/SAO sẵn (có điện trở 103 trên mặt trước) → quét I2C trước, trống mới hàn thêm. OCS/SCX/SDX/INT1/INT2 bỏ trống.
