@@ -54,5 +54,6 @@
 - [x] Schematic KiCad + ERC 0 lỗi (`hardware/gen_schematic.py`).
 
 ## v2 (sau khi bản cầm tay chạy ổn)
+- [ ] UWB soi người sau vách + nhịp thở (PARK, chi tiết `docs/uwb-option.md`): mua X4M200, blocker nguồn hàng. UART2 GPIO4/5, verify IO voltage (có thể 1.8V → level shifter). KHÔNG fuse toạ độ với LD2450.
 - [ ] Chế độ cảm biến đặt xa qua ESP-NOW (frame ~30B, ~10Hz). Cần xa hơn mới dùng LoRa, chỉnh 918,4–923 MHz ≤25mW (VN); kiểm tần số LIVE cả 2 đầu
 - [ ] Cân nhắc gộp LiDAR + mmWave trên cùng màn hình

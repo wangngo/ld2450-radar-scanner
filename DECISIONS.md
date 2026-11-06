@@ -37,3 +37,17 @@ Tác giả cũng ghi: radar bị di chuyển thì độ chính xác giảm mạn
 ## 2026-11-05 — Review advisor: gộp mục tiêu mặc định TẮT
 Gộp <1m làm slot biến mất → UI đếm "mất dấu" ảo, chấm nằm giữa 2 người; ý tưởng gốc từ RD-03D, chưa có bằng chứng
 LD2450 tách tay/thân thành 2 mục tiêu. Giữ tính năng (nút bật trên web) nhưng mặc định tắt cho tới khi test thật.
+
+## 2026-11-07 — UWB "soi người sau vách": chốt X4M200, PARK sang Phase-2
+Hỏi: thêm RCWL-0515 có cho LD2450 xuyên tường không → KHÔNG (2.7GHz Doppler, chỉ 1-bit chuyển động, vô hướng,
+hại nhiều hơn lợi cho máy cầm tay). Hướng xuyên vách khả thi duy nhất = **radar xung UWB (IR-UWB) Novelda XeThru
+X4** (7.29/8.748 GHz), bắt được presence + khoảng cách + nhịp thở sau tường 20–30cm (trừ kim loại).
+Quyết định:
+- **Mua X4M200** (respiration, firmware onboard) — KHÔNG X4M300 (presence) và KHÔNG X4M03 (raw, phải tự xử lý hết).
+- **PARK sang Phase-2**, không gắn vào máy LD2450 hiện tại: khác bài toán (xuyên vách + nhịp thở, KHÔNG định vị
+  2D), + blocker nguồn hàng (X4M200 hiếm, đời cũ, ~$45 eBay). Chốt mua được rồi mới thiết kế tiếp.
+- Nối ESP32 qua **UART2 GPIO4/5** @115200, 2 radar độc lập, KHÔNG fuse toạ độ; UI khối riêng + toggle chế độ.
+  ⚠️ Verify IO voltage module (có thể 1.8V → cần level shifter).
+- Repo tham khảo XPengZhao/Respiratory-monitoring: học khung XEP + thuật toán (slow-time→bandpass→FFT), **NO
+  LICENSE → không copy code**. Chi tiết: `docs/uwb-option.md`.
+- Bỏ qua: DW3000/U1 (ranging tag, không soi người), Acconeer A121 (60GHz, không xuyên tường), RCWL-0515/0516.
