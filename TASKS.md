@@ -7,7 +7,7 @@
 - [x] Bản web trên điện thoại (env `s3_web`): WiFi AP + trang radar, cảnh báo, bíp theo khoảng cách, chọn tầm, log CSV (mock-test OK)
 
 ## Mở
-- [x] Flash `s3_web` lên ESP32-S3 của W (2026-11-07): định danh LIVE OK (ESP32-S3 rev v0.2, 16MB, MAC `1c:db:d4:43:ef:78` OUI Espressif). Verify qua điện thoại: web mở được + chấm mục tiêu nhảy theo người đi. CÒN: đọc log serial qua cổng USB native để xác nhận `# radar cfg xong`/ACK + tần số ~10Hz (cách C — cắm cáp 2).
+- [x] Flash `s3_web` lên ESP32-S3 của W (2026-11-07): định danh LIVE OK (ESP32-S3 rev v0.2, 16MB, MAC `1c:db:d4:43:ef:78` OUI Espressif). Verify qua điện thoại: web mở được + chấm mục tiêu nhảy theo người đi, **radar 11Hz**. Log serial (bản `s3_log` CDC off, đọc qua UART0): `# radar cfg xong` + mode multi + `# bmi160 chip 0xD1 ok` + `# AP ... RX=18 TX=17`.
 - [ ] W mua hàng: LD2450, Waveshare ESP32-S3-Touch-LCD-2.8 (240×320), LiPo 1S MX1.25, boost 5V (nếu cần), microSD ≤16GB
 - [ ] Khi nhận board: định danh LIVE (esptool MAC+OUI), tra schematic: header có 5V không, có chân đo áp pin không, pin LCD/touch/SD/audio
 - [ ] Chụp frame thật từ UART → thêm vào test; verify đơn vị mm + dấu speed bằng thước/đi lại gần
@@ -26,7 +26,7 @@
   - Kiểm slot ID của LD2450 có giữ nguyên theo người không (cột "Bám liên tục" giả định vậy)
 - [ ] Tìm tài liệu lệnh chính hãng Hi-Link ("LD2450 serial communication protocol") đối chiếu 0x00FF/0x0091/0x0090/0x00FE
 - [ ] Viết test native cho máy trạng thái cấu hình (hiện chỉ nằm trong main.cpp)
-- [ ] Verify trên radar thật: log serial phải có `# radar mode hiện tại` + `# radar cfg xong`; nếu ra 'không nhận ACK' thì LD2450 không hỗ trợ/khác lệnh → firmware vẫn chạy cấu hình gốc
+- [x] Verify trên radar thật (2026-11-07): log serial có `# radar mode hiện tại: multi` + `# radar cfg xong` → LD2450 **CÓ** nhận lệnh cấu hình Hi-Link (0x00FF/0x0091/0x0090/0x00FE).
 
 ## Học từ repo Stevee87 (RD-03D, cùng định dạng frame) — chờ W chọn
 - [x] Gửi lệnh multi-target lúc boot: bật cấu hình 0x00FF → hỏi chế độ 0x0091 → nếu chưa multi thì 0x0090 → kết thúc 0x00FE (khớp crate ld2450-proto)
@@ -35,7 +35,7 @@
 - [ ] Kiểm chân 5V của DevKitC clone: một số board phải hàn cầu IN-OUT thì chân 5V mới có điện khi cắm USB
 
 ## Gyro BMI160 (code xong 2026-11-06, chưa chạy thật)
-- [ ] Flash + xem log: phải có `# bmi160 chip 0xD1 ok` (định danh chip). Ra "không thấy chip" → I2C scan, kiểm CS→3V3/SAO→GND.
+- [x] Flash + xem log (2026-11-07): `# bmi160 chip 0xD1 ok, gyro 100Hz ±250dps`. Debug: ban đầu bus I2C chết (quét `diag/i2cscan.cpp` không thấy gì) → hoá ra SAO thả nổi (module kéo lên → 0x69); nối **SAO→GND** → về `0x68`, chip_id `0xD1`. (CS phải →3V3 đã làm.)
 - [ ] Chỉnh ngưỡng lắc thực địa (`lib/shake_detect/src/shake_detect.h`: on 30 / off 15 °/s, hold 300ms) — cầm tay yên xem `dps` trên web, lia nhẹ xem cờ bật đúng lúc.
 - [ ] Env `waveshare_s3_28` cũng gọi `imuBegin()` trên GPIO8/9 — khi có board Waveshare phải tra pin xem 8/9 có bị LCD/touch chiếm không.
 

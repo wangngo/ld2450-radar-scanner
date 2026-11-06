@@ -8,8 +8,9 @@ cảnh báo khi có người vào vùng, ghi log CSV lên SD. Plan đầy đủ:
 - **Bản web (env `s3_web`) — ĐÃ CHẠY TRÊN PHẦN CỨNG THẬT (2026-11-07).** W hàn LD2450↔ESP32-S3, flash OK, verify qua
   điện thoại: AP `LD2450-Radar`/`radar2450` → `http://192.168.4.1`, web mở được + **chấm mục tiêu nhảy theo người đi**
   → mối hàn UART (TX→GPIO18, RX→GPIO17 chéo) + 5V/GND đúng, parser + WiFi AP + web chạy thật. Nguồn: USB.
-  CÒN verify: log serial (ACK cấu hình radar + tần số ~10Hz) qua cổng USB native — CDC_ON_BOOT=1 nên `Serial` không ra
-  cổng UART đã flash; chiều dấu speed (lại gần/ra xa) đo thực địa; gyro BMI160 trên chip thật.
+  Log serial (qua bản `s3_log` CDC off) xác nhận: `# radar cfg xong` + mode **multi** (LD2450 nhận lệnh Hi-Link) +
+  `# bmi160 chip 0xD1 ok` + radar **11Hz**. **Gyro BMI160 đã hàn + chạy thật** (0x68, SAO→GND).
+  CÒN verify: chiều dấu speed (lại gần/ra xa) đo thực địa; chỉnh ngưỡng lắc thực địa.
 - Nối dây `s3_web`: LD2450 5V→5V, GND→GND, TX→GPIO18, RX→GPIO17.
 - Bản màn hình gắn liền Waveshare (`waveshare_s3_28`): chờ mua board, pin theo wiki **chưa verify**.
 - **Carrier PCB v1** (`hardware/gen_carrier.py`, DRC 0/0, Gerber sẵn) — CHƯA đặt in: chờ kiểm chiều gương BMI160 + LD2450 pitch + in 1:1 (TASKS.md).
@@ -23,10 +24,13 @@ cảnh báo khi có người vào vùng, ghi log CSV lên SD. Plan đầy đủ:
 - Gyro = **BMI160** (board tím CJMCU-160). Neo: nhãn chân mặt sau `OCS/INT2/INT1/SCX/SDX` + `VIN/3V3/GND/SCL/SDA/CS/SAO` = chữ ký pinout BMI160 (IMU 6 trục). Chữ laser trên chip chưa đọc được → verify cuối = I2C scan + Chip ID reg `0x00` phải = `0xD1`.
   - Chiều: mặt linh kiện LÊN + VIN hướng xa → hàng 7 (VIN…SAO) bên TRÁI, hàng 5 bên phải, hàng 5 nằm giữa (OCS ngang 3V3). Nhãn chữ in ở mặt KHÔNG có chip (ngược gương).
   - I2C: VIN→3V3, GND→G, SDA→GPIO8, SCL→GPIO9. **CS→3V3 (ép I2C, CS thấp=SPI)**, **SAO→GND (addr 0x68)**. Board *có thể* đã pull-up sẵn (ảnh 2 mặt 2026-11-06 thấy 4 điện trở **392 = 3.9kΩ**, ghi chú cũ "103" có thể khác lô; chưa rõ nối chân nào → đo ohm tới 3V3) → quét I2C trước, trống mới hàn thêm. OCS/SCX/SDX/INT1/INT2 bỏ trống.
+  - **VERIFY LIVE 2026-11-07**: chip_id reg 0x00 = **0xD1** → BMI160 thật, chạy OK. **GOTCHA: SAO thả nổi → module tự kéo lên → ra địa chỉ `0x69`** (không phải 0x68). Phải nối **SAO→GND** mới về `0x68` khớp firmware (`imu.h` hardcode 0x68). Quét bằng `diag/i2cscan.cpp` (env `i2cscan`).
 
 ## Lệnh
 - Test parser: `pio test -e native`
 - Build: `pio run -e s3_web` · Flash: `pio run -e s3_web -t upload` · Log: `pio device monitor`
+- **Đọc log qua cổng usbserial (CH340)**: bản `s3_web` (CDC=1) log chỉ ra cổng USB native. Muốn đọc qua cổng CH340 → flash env **`s3_log`** (= s3_web, `CDC_ON_BOOT=0`) rồi monitor. Reset board không cần bấm nút: toggle RTS trong pyserial (`p.dtr=False; p.rts=True; sleep; p.rts=False`).
+- **Chẩn đoán I2C/gyro**: env **`i2cscan`** (`diag/i2cscan.cpp`) — quét bus GPIO8/9, đọc chip_id 0x68 & 0x69. Dùng khi web báo `gyro ✗`.
 
 ## Gotcha
 - Trường thứ 4 của mỗi target là **distance resolution**, KHÔNG phải khoảng cách → khoảng cách = hypot(x,y).

@@ -5,6 +5,12 @@
   Định danh LIVE (esptool): chip **ESP32-S3 rev v0.2, flash 16MB**, MAC `1c:db:d4:43:ef:78` → OUI `1C:DB:D4` = **Espressif** (tra nmap-mac-prefixes, khớp luật OUI).
   Build+flash `s3_web` (779616 B, hash verified). Verify thật qua điện thoại: AP `LD2450-Radar`/`radar2450` → `http://192.168.4.1`, web mở được, **chấm mục tiêu nhảy theo người đi** → mối hàn UART (Tx/Rx chéo GPIO18/17) + 5V/GND đúng, parser + WiFi AP + web chạy thật.
   Chưa đọc log serial (CDC_ON_BOOT=1 → `Serial` ra cổng USB native, chưa cắm) → `# radar cfg xong`/ACK + tần số ~10Hz còn verify sau (cách C).
+- **Hàn gyro BMI160 + verify hoàn chỉnh trên board thật (2026-11-07).** W hàn CJMCU-160 vào ESP32-S3.
+  - Debug bus I2C: viết `diag/i2cscan.cpp` + env `i2cscan` (log ra UART0, CDC off → đọc được qua cổng usbserial đang cắm; reset board bằng toggle RTS trong python pyserial). Lần 1: **không ACC địa chỉ nào** → nối CS→3V3 vẫn câm → hoá ra **SAO thả nổi** (module tự kéo lên → hiện ở `0x69`, chip_id `0xD1`). Nối **SAO→GND** → về `0x68 = 0xD1` khớp firmware (`imu.h` dùng 0x68).
+  - Env tạm `s3_log` (= `s3_web` nhưng `CDC_ON_BOOT=0`) để đọc toàn bộ boot log qua UART0. Log xác nhận: `# bmi160 chip 0xD1 ok, gyro 100Hz ±250dps`, `# radar mode hiện tại: multi`, `# radar cfg xong` (**LD2450 CÓ nhận lệnh cấu hình Hi-Link**), `# AP LD2450-Radar IP 192.168.4.1 radar RX=18 TX=17`. Web: radar **11Hz**.
+  - Fix build: chắn `Serial.setTxTimeoutMs(0)` bằng `#if ARDUINO_USB_CDC_ON_BOOT` (hàm chỉ có ở USB-CDC; build UART0 báo lỗi). Vô hại cho bản thật.
+  - Khôi phục `s3_web` lên board. **Toàn bộ phần cứng (radar + gyro + WiFi/web) đã chạy & verify trên thật.**
+  - Gotcha: muốn đọc log qua cổng usbserial (CH340) phải flash bản `CDC_ON_BOOT=0`; bản `s3_web` (CDC=1) log chỉ ra cổng USB native.
 
 ## 2026-11-06
 - **Schematic KiCad** `hardware/carrier/carrier.kicad_sch` (sinh bằng `hardware/gen_schematic.py`, tên chân module cạnh từng chân): **ERC 0 vi phạm**, PDF `carrier-schematic.pdf`. Thêm `carrier.kicad_pro` + `sym/fp-lib-table` dùng `${KICAD10_*}` (máy chưa có bảng lib toàn cục). DRC PCB vẫn 0/0.

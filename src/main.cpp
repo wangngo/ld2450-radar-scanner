@@ -125,7 +125,9 @@ static void handleCfg() {
 
 void setup() {
   Serial.begin(115200);
-  Serial.setTxTimeoutMs(0);  // cắm PC mà không mở terminal: không để mỗi lần in chờ 100ms làm kẹt loop
+#if ARDUINO_USB_CDC_ON_BOOT
+  Serial.setTxTimeoutMs(0);  // cắm PC mà không mở terminal: không để mỗi lần in chờ 100ms làm kẹt loop (chỉ USB-CDC)
+#endif
   Serial1.setRxBufferSize(1024);
   Serial1.begin(RADAR_BAUD, SERIAL_8N1, RADAR_RX_PIN, RADAR_TX_PIN);
 
