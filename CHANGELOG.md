@@ -1,6 +1,10 @@
 # CHANGELOG
 
 ## 2026-11-06
+- **Carrier PCB v1** (`hardware/gen_carrier.py` → `hardware/carrier/`): sinh bằng pcbnew (KiCad 10.0.8), 66×66mm 2 lớp, GND pour 2 mặt.
+  DevKitC-1 theo DXF Espressif (row-to-row 22.86 xác nhận, J1 trái/J3 phải, chân 1 phía antenna); BMI160 1x7+1x5 cách 10.16, hàng 5 nằm giữa (lệch 1 bước, W xác nhận).
+  Sửa theo advisor: antenna WROOM thò 6.3mm khỏi mép DevKitC → **khoét notch mép trên**, 3V3 đi dưới shield luồn giữa J3.2/J3.3; thêm silk tên chân + ANT/USB; R1/R2 4k7 kéo I2C (DNP).
+  DRC (kicad-cli): **0 vi phạm, 0 chưa nối**. Gerber+drill: `hardware/carrier/carrier-gerber.zip`. Chưa có schematic (netlist nằm trong script).
 - Định danh gyro: board tím = **BMI160 (CJMCU-160)**, neo theo nhãn chân mặt sau (OCS/INT2/INT1/SCX/SDX + VIN/3V3/GND/SCL/SDA/CS/SAO). Chưa đọc được mã laser chip → verify cuối = I2C scan + Chip ID reg 0x00 = 0xD1.
 - `docs/wiring.html`: thêm mục "Bố trí vật lý — radar & gyro" (mặt cắt 4 lớp: anten ra trước → đế cứng radar+gyro → tấm chắn kim loại → ESP32+pin+tay). Cập nhật bảng gyro: thêm **CS→3V3** (ép I2C, CS thấp=SPI) + **SAO→GND** (addr 0x68) + mục quét I2C trước khi hàn thêm.
 - `CLAUDE.md`: điền định danh BMI160 + gotcha CS/SAO; note N16R8 có PSRAM octal chiếm GPIO33–37 (cấm dùng).

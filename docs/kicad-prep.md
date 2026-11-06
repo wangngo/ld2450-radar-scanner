@@ -54,6 +54,12 @@ File `.mcp.json` ở repo root (git-track được):
 - **NC**: BMI160 OCS/SCX/SDX/INT1/INT2
 - CS→3V3 và SAO→GND **hàn chết trên carrier** (không ra dây ngoài).
 
+## Kết quả dựng (2026-11-06)
+- Không dùng MCP để vẽ (tool `sch_*` của kicad-mcp-pro chỉ thêm net label) → sinh thẳng bằng **pcbnew Python của KiCad 10** (`hardware/gen_carrier.py`), DRC/Gerber bằng `kicad-cli`. Chạy lại script = tái tạo board.
+- Pinout J1 đối chiếu user guide v1.1: 3V3=1/2, GPIO17=10, GPIO18=11, GPIO8=12, GPIO9=15, 5V=21, G=22 (J3: G=1/21/22). Tất cả chân dùng nằm trên J1.
+- DXF: module WROOM (lớp TOP) x3.75–21.75, y18.27–69.15, board chỉ tới y62.87 → antenna thò 6.3mm → notch mép trên carrier.
+- Việc phải kiểm tay trước khi đặt: xem TASKS.md mục "Carrier PCB v1".
+
 ## Bước phiên sau
 1. W duyệt + ghi `.mcp.json`; `uvx kicad-mcp-pro doctor` pass; restart session.
 2. ~~W cấp số row-to-row DevKitC + đếm chân BMI160~~ — xong: DevKitC 22.86mm, BMI160 7+5 cách 10.16mm.

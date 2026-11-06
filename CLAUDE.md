@@ -11,6 +11,7 @@ cảnh báo khi có người vào vùng, ghi log CSV lên SD. Plan đầy đủ:
   Đã kiểm bằng mock server + Chrome headless; **CHƯA chạy trên board + radar thật**.
 - Nối dây `s3_web`: LD2450 5V→5V, GND→GND, TX→GPIO18, RX→GPIO17.
 - Bản màn hình gắn liền Waveshare (`waveshare_s3_28`): chờ mua board, pin theo wiki **chưa verify**.
+- **Carrier PCB v1** (`hardware/gen_carrier.py`, DRC 0/0, Gerber sẵn) — CHƯA đặt in: chờ kiểm chiều gương BMI160 + LD2450 pitch + in 1:1 (TASKS.md).
 - Parser + lệnh cấu hình + bộ lọc tự viết (`lib/ld2450_parser`), 12 test native pass. Máy trạng thái cấu hình radar lúc boot **chưa chạy trên radar thật**.
 
 ## Định danh thiết bị (điền khi hàng về — đọc LIVE, không tin nhãn)

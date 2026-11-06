@@ -34,6 +34,13 @@
 - [x] Bỏ mục tiêu < 0,1m hoặc > 6m (ngoài tầm theo manual)
 - [ ] Kiểm chân 5V của DevKitC clone: một số board phải hàn cầu IN-OUT thì chân 5V mới có điện khi cắm USB
 
+## Carrier PCB v1 — kiểm trước khi đặt JLCPCB (từ review advisor 2026-11-06)
+- [ ] **BMI160 chiều gương**: cầm module mặt linh kiện LÊN, đầu VIN hướng ra xa → hàng 7 chân phải ở BÊN TRÁI, hàng 5 bên phải (đúng layout J4 x=52 / J5 x=62.16). Ngược lại = gương, xoay 180° không cứu được → sửa `gen_carrier.py`.
+- [ ] In 1:1 F.Silk/F.Fab, đặt DevKitC + BMI160 thật lên kiểm lỗ; antenna phải nằm trên notch.
+- [ ] LD2450: đo pitch chân thật (giả định 2.54) + thứ tự 5V/GND/Tx/Rx trên silk module; chốt cách gắn (dây / header cong) — cắm thẳng vào J2 thì radar chĩa lên trời + đè C1.
+- [ ] CJMCU-160: có pull-up SDA/SCL sẵn không (không có → lắp R1/R2 4k7), có LDO VIN→3V3 không (có → VIN 3V3 ra ~3.1V, vẫn trong dải BMI160).
+- [ ] (tuỳ) dựng schematic KiCad cho ERC — hiện netlist chỉ nằm trong script.
+
 ## v2 (sau khi bản cầm tay chạy ổn)
 - [ ] Chế độ cảm biến đặt xa qua ESP-NOW (frame ~30B, ~10Hz). Cần xa hơn mới dùng LoRa, chỉnh 918,4–923 MHz ≤25mW (VN); kiểm tần số LIVE cả 2 đầu
 - [ ] Cân nhắc gộp LiDAR + mmWave trên cùng màn hình
