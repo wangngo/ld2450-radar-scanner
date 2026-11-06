@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2026-11-07
+- **FLASH ĐẦU TIÊN LÊN PHẦN CỨNG THẬT — chạy OK.** W hàn LD2450↔ESP32-S3 DevKitC N16R8, cắm cổng UART `/dev/cu.usbserial-0001`.
+  Định danh LIVE (esptool): chip **ESP32-S3 rev v0.2, flash 16MB**, MAC `1c:db:d4:43:ef:78` → OUI `1C:DB:D4` = **Espressif** (tra nmap-mac-prefixes, khớp luật OUI).
+  Build+flash `s3_web` (779616 B, hash verified). Verify thật qua điện thoại: AP `LD2450-Radar`/`radar2450` → `http://192.168.4.1`, web mở được, **chấm mục tiêu nhảy theo người đi** → mối hàn UART (Tx/Rx chéo GPIO18/17) + 5V/GND đúng, parser + WiFi AP + web chạy thật.
+  Chưa đọc log serial (CDC_ON_BOOT=1 → `Serial` ra cổng USB native, chưa cắm) → `# radar cfg xong`/ACK + tần số ~10Hz còn verify sau (cách C).
+
 ## 2026-11-06
 - **Schematic KiCad** `hardware/carrier/carrier.kicad_sch` (sinh bằng `hardware/gen_schematic.py`, tên chân module cạnh từng chân): **ERC 0 vi phạm**, PDF `carrier-schematic.pdf`. Thêm `carrier.kicad_pro` + `sym/fp-lib-table` dùng `${KICAD10_*}` (máy chưa có bảng lib toàn cục). DRC PCB vẫn 0/0.
 - **Sơ đồ hàn board đục lỗ 7×9cm** `docs/perfboard.html` (sinh bằng `hardware/gen_perfboard.py`): mặt trên + mặt dưới (lật gương), 10 dây + 4 cầu thiếc, in 1:1. Script tự đối chiếu dây với netlist trích từ schematic (test âm: chập SDA/SCL và thiếu dây UART đều bị bắt). Advisor: không blocker; đã thêm đo 5V–J1.20 (cầu 5V sát GPIO14), rút DevKitC sau khi hàn socket, rút USB trước khi cắm radar.

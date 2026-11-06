@@ -7,7 +7,7 @@
 - [x] Bản web trên điện thoại (env `s3_web`): WiFi AP + trang radar, cảnh báo, bíp theo khoảng cách, chọn tầm, log CSV (mock-test OK)
 
 ## Mở
-- [ ] Flash `s3_web` lên ESP32-S3 của W: định danh LIVE (esptool MAC) trước, verify boot log + radar thật + trang trên điện thoại
+- [x] Flash `s3_web` lên ESP32-S3 của W (2026-11-07): định danh LIVE OK (ESP32-S3 rev v0.2, 16MB, MAC `1c:db:d4:43:ef:78` OUI Espressif). Verify qua điện thoại: web mở được + chấm mục tiêu nhảy theo người đi. CÒN: đọc log serial qua cổng USB native để xác nhận `# radar cfg xong`/ACK + tần số ~10Hz (cách C — cắm cáp 2).
 - [ ] W mua hàng: LD2450, Waveshare ESP32-S3-Touch-LCD-2.8 (240×320), LiPo 1S MX1.25, boost 5V (nếu cần), microSD ≤16GB
 - [ ] Khi nhận board: định danh LIVE (esptool MAC+OUI), tra schematic: header có 5V không, có chân đo áp pin không, pin LCD/touch/SD/audio
 - [ ] Chụp frame thật từ UART → thêm vào test; verify đơn vị mm + dấu speed bằng thước/đi lại gần

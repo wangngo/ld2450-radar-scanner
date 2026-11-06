@@ -4,11 +4,12 @@ Máy scan radar **cầm tay, chạy pin**: radar 24GHz HLK-LD2450 + ESP32-S3 có
 ESP32-S3-Touch-LCD-2.8, bản 240×320 ST7789). Phát hiện người phía trước, vẽ radar quạt + số liệu từng mục tiêu,
 cảnh báo khi có người vào vùng, ghi log CSV lên SD. Plan đầy đủ: `docs/PLAN.md`.
 
-## Trạng thái hiện tại (2026-11-05)
-- **Bản web chạy ngay (env `s3_web`)**: W đã có LD2450 + ESP32-S3. ESP32 phát WiFi `LD2450-Radar` / `radar2450`,
-  điện thoại mở `http://192.168.4.1` để xem radar quạt, bảng số liệu, vùng cảnh báo (chớp đỏ), bíp theo khoảng cách
-  (WebAudio, phải bấm nút để bật), ghi log CSV tải về điện thoại. Nguồn: sạc dự phòng qua USB.
-  Đã kiểm bằng mock server + Chrome headless; **CHƯA chạy trên board + radar thật**.
+## Trạng thái hiện tại (2026-11-07)
+- **Bản web (env `s3_web`) — ĐÃ CHẠY TRÊN PHẦN CỨNG THẬT (2026-11-07).** W hàn LD2450↔ESP32-S3, flash OK, verify qua
+  điện thoại: AP `LD2450-Radar`/`radar2450` → `http://192.168.4.1`, web mở được + **chấm mục tiêu nhảy theo người đi**
+  → mối hàn UART (TX→GPIO18, RX→GPIO17 chéo) + 5V/GND đúng, parser + WiFi AP + web chạy thật. Nguồn: USB.
+  CÒN verify: log serial (ACK cấu hình radar + tần số ~10Hz) qua cổng USB native — CDC_ON_BOOT=1 nên `Serial` không ra
+  cổng UART đã flash; chiều dấu speed (lại gần/ra xa) đo thực địa; gyro BMI160 trên chip thật.
 - Nối dây `s3_web`: LD2450 5V→5V, GND→GND, TX→GPIO18, RX→GPIO17.
 - Bản màn hình gắn liền Waveshare (`waveshare_s3_28`): chờ mua board, pin theo wiki **chưa verify**.
 - **Carrier PCB v1** (`hardware/gen_carrier.py`, DRC 0/0, Gerber sẵn) — CHƯA đặt in: chờ kiểm chiều gương BMI160 + LD2450 pitch + in 1:1 (TASKS.md).
