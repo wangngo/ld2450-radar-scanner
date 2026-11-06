@@ -6,6 +6,7 @@
 #include "ld2450_cmd.h"
 #include "ld2450_filter.h"
 #include "ld2450_parser.h"
+#include "imu.h"
 #include "web_page.h"
 
 #ifndef RADAR_RX_PIN
@@ -100,9 +101,11 @@ static void cfgTick() {
 
 static void handleData() {
   bool stale = millis() - lastFrameMs > STALE_MS;
-  char buf[240];
-  int n = snprintf(buf, sizeof(buf), "{\"n\":%lu,\"stale\":%s,\"mode\":%u,\"cluster\":%s,\"t\":[",
-                   (unsigned long)parser.frames(), stale ? "true" : "false", radarMode, clusterOn ? "true" : "false");
+  char buf[280];
+  int n = snprintf(buf, sizeof(buf),
+                   "{\"n\":%lu,\"stale\":%s,\"mode\":%u,\"cluster\":%s,\"imu\":%s,\"shake\":%s,\"dps\":%.0f,\"t\":[",
+                   (unsigned long)parser.frames(), stale ? "true" : "false", radarMode, clusterOn ? "true" : "false",
+                   imuOk ? "true" : "false", shake.shaking ? "true" : "false", imuDps);
   bool first = true;
   for (int i = 0; i < 3 && !stale; i++) {
     const Ld2450Target &t = shown.t[i];
@@ -132,10 +135,11 @@ void setup() {
   server.on("/data", handleData);
   server.on("/cfg", handleCfg);
   server.begin();
+  imuBegin();
 
   Serial.printf("# AP %s  IP %s  radar RX=%d TX=%d\n", AP_SSID, WiFi.softAPIP().toString().c_str(),
                 RADAR_RX_PIN, RADAR_TX_PIN);
-  Serial.println("ts_ms,id,x_mm,y_mm,speed_cms,dist_mm,angle_deg");
+  Serial.println("ts_ms,id,x_mm,y_mm,speed_cms,dist_mm,angle_deg,shake");
 }
 
 void loop() {
@@ -149,10 +153,11 @@ void loop() {
     for (int i = 0; i < 3; i++) {
       const Ld2450Target &t = shown.t[i];
       if (!t.valid) continue;
-      Serial.printf("%lu,%d,%d,%d,%d,%u,%.1f\n", (unsigned long)millis(), i + 1, t.x, t.y, t.speed,
-                    t.distanceMm(), t.angleDeg());
+      Serial.printf("%lu,%d,%d,%d,%d,%u,%.1f,%d\n", (unsigned long)millis(), i + 1, t.x, t.y, t.speed,
+                    t.distanceMm(), t.angleDeg(), shake.shaking ? 1 : 0);
     }
   }
+  imuTick(millis());
   cfgTick();
   server.handleClient();
 }

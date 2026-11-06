@@ -1,6 +1,10 @@
 # CHANGELOG
 
 ## 2026-11-06
+- **Gyro BMI160 → phát hiện lia/lắc máy**: driver chính hãng Bosch (`lib/bmi160`, BSD-3, ghim commit 252ac28) + lớp nối Wire `src/imu.h` (SDA 8 / SCL 9, addr 0x68, gyro 100Hz ±250dps).
+  `lib/shake_detect`: bật ≥30°/s, giữ ≥15°/s, tắt sau 300ms yên (ngưỡng khởi đầu, chỉnh thực địa). Test native 17/17.
+  `/data` thêm `imu`/`shake`/`dps`; web **làm mờ** mục tiêu + dòng "ĐANG LẮC MÁY" khi lắc (cảnh báo vùng/bíp vẫn chạy); CSV serial + web thêm cột `shake`.
+  Không thấy chip → log `# bmi160: không thấy chip`, firmware chạy tiếp không gyro. Build s3_web OK; kiểm web bằng mock + Chrome headless. **Chưa chạy trên chip thật.**
 - **Carrier PCB v1** (`hardware/gen_carrier.py` → `hardware/carrier/`): sinh bằng pcbnew (KiCad 10.0.8), 66×66mm 2 lớp, GND pour 2 mặt.
   DevKitC-1 theo DXF Espressif (row-to-row 22.86 xác nhận, J1 trái/J3 phải, chân 1 phía antenna); BMI160 1x7+1x5 cách 10.16, hàng 5 nằm giữa (lệch 1 bước, W xác nhận).
   Sửa theo advisor: antenna WROOM thò 6.3mm khỏi mép DevKitC → **khoét notch mép trên**, 3V3 đi dưới shield luồn giữa J3.2/J3.3; thêm silk tên chân + ANT/USB; R1/R2 4k7 kéo I2C (DNP).

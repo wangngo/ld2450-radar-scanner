@@ -49,7 +49,7 @@ $('rng').onchange=e=>{R=+e.target.value;$('zone').max=R;if(zone>R){zone=R;$('zon
 $('zone').oninput=e=>{zone=+e.target.value;$('zv').textContent=zone+' m'};
 $('snd').onclick=()=>{sound=!sound;if(sound&&!ac)ac=new (window.AudioContext||window.webkitAudioContext)();if(ac)ac.resume();$('snd').classList.toggle('on',sound);$('snd').textContent=(sound?'🔊':'🔇')+' Âm thanh'};
 $('rec').onclick=()=>{rec=!rec;$('rec').classList.toggle('on',rec);$('rec').textContent=rec?'■ Dừng ghi':'● Ghi log'};
-$('dl').onclick=()=>{if(!log.length)return;const b=new Blob(['ts_iso,id,x_mm,y_mm,speed_cms,dist_mm,angle_deg\n'+log.join('\n')],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='ld2450_'+new Date().toISOString().replace(/[:.]/g,'-')+'.csv';a.click()};
+$('dl').onclick=()=>{if(!log.length)return;const b=new Blob(['ts_iso,id,x_mm,y_mm,speed_cms,dist_mm,angle_deg,shake\n'+log.join('\n')],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='ld2450_'+new Date().toISOString().replace(/[:.]/g,'-')+'.csv';a.click()};
 function geo(){const w=C.clientWidth,h=w*0.62,cx=w/2,cy=h-6,rad=Math.min(h-12,(w/2-6)/Math.sin(Math.PI/3));return{w,h,cx,cy,rad}}
 function toPx(g,x,y){return[g.cx+x/1000/R*g.rad,g.cy-y/1000/R*g.rad]}
 function draw(){const g=geo(),a0=-Math.PI/2-Math.PI/3,a1=-Math.PI/2+Math.PI/3;X.clearRect(0,0,g.w,g.h);
@@ -57,28 +57,29 @@ function draw(){const g=geo(),a0=-Math.PI/2-Math.PI/3,a1=-Math.PI/2+Math.PI/3;X.
  const step=R<=3?0.5:1;for(let r=step;r<=R+1e-6;r+=step){const p=r/R*g.rad;X.beginPath();X.arc(g.cx,g.cy,p,a0,a1);X.stroke();X.fillText(r+'m',g.cx+3,g.cy-p+11)}
  for(const a of[-60,-30,0,30,60]){const t=(a-90)*Math.PI/180;X.beginPath();X.moveTo(g.cx,g.cy);X.lineTo(g.cx+Math.cos(t)*g.rad,g.cy+Math.sin(t)*g.rad);X.stroke()}
  if(zone>0){X.strokeStyle='#ff4d4d';X.setLineDash([4,4]);X.beginPath();X.arc(g.cx,g.cy,Math.min(zone,R)/R*g.rad,a0,a1);X.stroke();X.setLineDash([])}
- trails.forEach((tr,i)=>{tr.forEach((p,k)=>{const[px,py]=toPx(g,p[0],p[1]);X.globalAlpha=(k+1)/tr.length*0.5;X.fillStyle=COL[i];X.beginPath();X.arc(px,py,3,0,7);X.fill()});X.globalAlpha=1});
+ trails.forEach((tr,i)=>{tr.forEach((p,k)=>{const[px,py]=toPx(g,p[0],p[1]);X.globalAlpha=(k+1)/tr.length*0.5*(shaking?0.4:1);X.fillStyle=COL[i];X.beginPath();X.arc(px,py,3,0,7);X.fill()});X.globalAlpha=1});
  const now=performance.now();trk.forEach((k,i)=>{if(k.on||now-k.lostAt>GHOST_MS)return;const[px,py]=toPx(g,k.sx,k.sy);X.globalAlpha=1-(now-k.lostAt)/GHOST_MS;X.strokeStyle=COL[i];X.setLineDash([3,3]);X.beginPath();X.arc(px,py,8,0,7);X.stroke();X.setLineDash([]);X.globalAlpha=1});
- targets.forEach(t=>{const k=trk[t.id-1],[px,py]=toPx(g,k.sx,k.sy);X.fillStyle=COL[t.id-1];X.shadowColor=COL[t.id-1];X.shadowBlur=12;X.beginPath();X.arc(px,py,7,0,7);X.fill();X.shadowBlur=0;X.fillStyle='#04110a';X.fillText(t.id,px-3,py+4)});
+ targets.forEach(t=>{const k=trk[t.id-1],[px,py]=toPx(g,k.sx,k.sy);X.globalAlpha=shaking?0.3:1;X.fillStyle=COL[t.id-1];X.shadowColor=COL[t.id-1];X.shadowBlur=shaking?0:12;X.beginPath();X.arc(px,py,7,0,7);X.fill();X.shadowBlur=0;X.fillStyle='#04110a';X.fillText(t.id,px-3,py+4);X.globalAlpha=1});
+ if(shaking){X.fillStyle='#ffd84d';X.font='bold 13px monospace';X.fillText('ĐANG LẮC MÁY — số liệu không tin cậy',8,18)}
  requestAnimationFrame(draw)}
 requestAnimationFrame(draw);
 function beep(f){const o=ac.createOscillator(),v=ac.createGain();o.frequency.value=f;o.connect(v);v.connect(ac.destination);const n=ac.currentTime;v.gain.setValueAtTime(0.25,n);v.gain.exponentialRampToValueAtTime(0.001,n+0.09);o.start(n);o.stop(n+0.1)}
 function audio(){if(sound&&ac){const near=targets.filter(t=>t.d/1000<=R).sort((a,b)=>a.d-b.d)[0];const now=performance.now();if(near&&now>=nextBeep){const k=Math.min(1,near.d/1000/R);beep(1300-800*k);nextBeep=now+90+1300*k}}setTimeout(audio,30)}
 audio();
-let lastN=-1,lastNt=0,radarHz=0;
-async function poll(){const ab=new AbortController(),to=setTimeout(()=>ab.abort(),1000);try{const r=await fetch('/data',{cache:'no-store',signal:ab.signal});const j=await r.json();lastOk=performance.now();
+let lastN=-1,lastNt=0,radarHz=0,shaking=false;
+async function poll(){const ab=new AbortController(),to=setTimeout(()=>ab.abort(),1000);try{const r=await fetch('/data',{cache:'no-store',signal:ab.signal});const j=await r.json();lastOk=performance.now();shaking=!!j.shake;
  targets=j.t.map(a=>({id:a[0],x:a[1],y:a[2],s:a[3],d:Math.round(Math.hypot(a[1],a[2])),ang:Math.atan2(a[1],a[2])*57.2958}));
  const seen=new Set(targets.map(t=>t.id)),tn=performance.now();trails=trails.map((tr,i)=>seen.has(i+1)?tr:[]);
  trk.forEach((k,i)=>{const on=seen.has(i+1);if(k.on&&!on){k.lost++;k.lostAt=tn}if(!k.on&&on)k.since=tn;k.on=on});
  targets.forEach(t=>{const k=trk[t.id-1];if(tn-k.since<1){k.sx=t.x;k.sy=t.y}else{k.sx+=EMA*(t.x-k.sx);k.sy+=EMA*(t.y-k.sy)}
   const tr=trails[t.id-1];tr.push([k.sx,k.sy]);if(tr.length>10)tr.shift()});
- if(rec){const ts=new Date().toISOString();targets.forEach(t=>log.push([ts,t.id,t.x,t.y,t.s,t.d,t.ang.toFixed(1)].join(',')));$('dl').textContent='⬇ CSV ('+log.length+')'}
+ if(rec){const ts=new Date().toISOString();targets.forEach(t=>log.push([ts,t.id,t.x,t.y,t.s,t.d,t.ang.toFixed(1),shaking?1:0].join(',')));$('dl').textContent='⬇ CSV ('+log.length+')'}
  document.body.classList.toggle('alert',zone>0&&targets.some(t=>t.d/1000<=zone));
  $('tb').innerHTML=trk.map((k,i)=>{const t=targets.find(t=>t.id===i+1);if(!t&&!k.lost)return'';const c=COL[i];
   if(!t)return`<tr style="opacity:.5"><td style="color:${c}">${i+1}</td><td colspan="3">mất dấu ${fmtS(tn-k.lostAt)} trước</td><td>–</td><td>${k.lost}</td></tr>`;
-  return`<tr><td style="color:${c}">${i+1}</td><td>${(t.d/1000).toFixed(2)} m</td><td>${t.ang.toFixed(0)}°</td><td>${t.s===0?'0 (yên)':t.s}</td><td>${fmtS(tn-k.since)}</td><td>${k.lost}</td></tr>`}).join('')||'<tr><td colspan="6" style="text-align:center;color:#1f6b42">không có mục tiêu</td></tr>';
+  return`<tr${shaking?' style="opacity:.4"':''}><td style="color:${c}">${i+1}</td><td>${(t.d/1000).toFixed(2)} m</td><td>${t.ang.toFixed(0)}°</td><td>${t.s===0?'0 (yên)':t.s}</td><td>${fmtS(tn-k.since)}</td><td>${k.lost}</td></tr>`}).join('')||'<tr><td colspan="6" style="text-align:center;color:#1f6b42">không có mục tiêu</td></tr>';
  const n=performance.now();if(lastN<0){lastN=j.n;lastNt=n}else if(n-lastNt>1000){radarHz=(j.n-lastN)*1000/(n-lastNt);lastN=j.n;lastNt=n}
- const st=$('st');if(j.stale){st.textContent='radar không gửi dữ liệu';st.className='bad'}else{st.textContent='radar '+radarHz.toFixed(0)+' Hz · '+({1:'1 người',2:'nhiều người'}[j.mode]||'chế độ ?')+' · '+j.n+' frame';st.className='ok'}
+ const st=$('st');if(j.stale){st.textContent='radar không gửi dữ liệu';st.className='bad'}else{st.textContent='radar '+radarHz.toFixed(0)+' Hz · '+({1:'1 người',2:'nhiều người'}[j.mode]||'chế độ ?')+' · '+j.n+' frame'+(j.imu===false?' · gyro ✗':shaking?' · ⚠ lắc '+j.dps+'°/s':'');st.className='ok'}
  if(j.cluster!==undefined&&j.cluster!==clusterOn)showCl(j.cluster);
 }catch(e){targets=[];document.body.classList.remove('alert');const st=$('st');st.textContent='mất kết nối ESP32';st.className='bad'}
  clearTimeout(to);setTimeout(poll,100)}

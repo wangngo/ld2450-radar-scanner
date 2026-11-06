@@ -34,6 +34,11 @@
 - [x] Bỏ mục tiêu < 0,1m hoặc > 6m (ngoài tầm theo manual)
 - [ ] Kiểm chân 5V của DevKitC clone: một số board phải hàn cầu IN-OUT thì chân 5V mới có điện khi cắm USB
 
+## Gyro BMI160 (code xong 2026-11-06, chưa chạy thật)
+- [ ] Flash + xem log: phải có `# bmi160 chip 0xD1 ok` (định danh chip). Ra "không thấy chip" → I2C scan, kiểm CS→3V3/SAO→GND.
+- [ ] Chỉnh ngưỡng lắc thực địa (`lib/shake_detect/src/shake_detect.h`: on 30 / off 15 °/s, hold 300ms) — cầm tay yên xem `dps` trên web, lia nhẹ xem cờ bật đúng lúc.
+- [ ] Env `waveshare_s3_28` cũng gọi `imuBegin()` trên GPIO8/9 — khi có board Waveshare phải tra pin xem 8/9 có bị LCD/touch chiếm không.
+
 ## Carrier PCB v1 — kiểm trước khi đặt JLCPCB (từ review advisor 2026-11-06)
 - [x] ~~**BMI160 chiều gương**~~ — khớp theo ảnh 2 mặt W gửi 2026-11-06 (mặt linh kiện: hàng 7 bên trái, VIN trên). Nếu ảnh là ảnh shop → soi lại 1 lần trên board thật. Gốc:: cầm module mặt linh kiện LÊN, đầu VIN hướng ra xa → hàng 7 chân phải ở BÊN TRÁI, hàng 5 bên phải (đúng layout J4 x=52 / J5 x=62.16). Ngược lại = gương, xoay 180° không cứu được → sửa `gen_carrier.py`.
 - [ ] In 1:1 F.Silk/F.Fab, đặt DevKitC + BMI160 thật lên kiểm lỗ; antenna phải nằm trên notch.
