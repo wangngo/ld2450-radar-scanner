@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 2026-11-25
+- Chuẩn hoá tài liệu công bố (Public release): viết mới `README.md` song ngữ Anh–Việt (phân tích 3 bug của `RBEGamer/HLK-LD2450` & lỗi manual Hi-Link, bù rung tay bằng gyro BMI160, bảng pinout `GPIO18/17` + `GPIO8/9` `SAO→GND`, hướng dẫn build/test/KiCad), thêm `LICENSE` (MIT + BSD-3-Clause cho `lib/bmi160`), gỡ `.mcp.json` khỏi git tracking.
+
 ## 2026-11-07
 - **FLASH ĐẦU TIÊN LÊN PHẦN CỨNG THẬT — chạy OK.** W hàn LD2450↔ESP32-S3 DevKitC N16R8, cắm cổng UART `/dev/cu.usbserial-0001`.
   Định danh LIVE (esptool): chip **ESP32-S3 rev v0.2, flash 16MB**, MAC `1c:db:d4:43:ef:78` → OUI `1C:DB:D4` = **Espressif** (tra nmap-mac-prefixes, khớp luật OUI).
